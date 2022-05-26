@@ -1,0 +1,28 @@
+.todoTable {
+  border: 2px solid #000000;
+}
+.todoTable tr {
+  font-family: open-sans,sans-serif;
+  font-weight: 400;
+  font-style:normal;
+}
+
+.todoTable td {
+  border: 1px solid #000000;
+  border-style:solid;
+}
+            
+.todoTable th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: rgb(0, 0, 0);
+  font-family: open-sans, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+/* changes row colours */
+.todoTable tr:nth-child(even,odd){background-color: #f2f2f2;}
+.todoTable tr:hover {background-color: #ddd;}
+.todoTable tr:hover TD:nth-child(1){font-weight: bold}

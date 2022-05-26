@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<title>Item Deletion Success</title>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- JAVA SCRIPT-->
+    <script src="/static/openNav.js"></script>
+    <script src="static/success.js"></script>
+    <script src="static/UserSelect.js"></script>
+    <!-- CSS / FONT-->
+    <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Browser Icon-->
+    <link rel="icon" type="image.png" href="static/favicon-16x16.png">
+</head>
+<!-- End of Header -->
+<body>
+    <div>
+        <!-- User Login Buttons-->
+        <div id="userLogin/signUp">
+            <!--
+            <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
+            -->
+            <form action="/loginPage" method="get">
+                <!-- Login   Button-->
+                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+            </form>
+            <div style="position:relative; top: 1px;">
+                <form action="/signUp" method="get">
+                    <!-- Sign Up  Button-->
+                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                </form>
+            </div>
+        </div>
+        <!-- User Login Buttions-->
+
+        <div>
+            <!-- Side Nav Div -->
+            <div id="mySidenav" class="sidenav">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <form action="/" method="get">
+                    <input type="submit" name="homeRedirect" value="Home Page">
+                </form>
+                <br>
+                <form action="/userSelectTodo" method="get">
+                    <input type="submit" name="todoList" value="View Entries">
+                </form>
+                <br>
+                <form action="/new" method="get">
+                    <input type="submit" name="saveNew" value="New Entry">
+                </form>
+                <br>
+                <form action="/edit/editSelect" method="get">
+                    <input type="submit" name="editEntry" value="Edit Entry">
+                </form>
+                <br>
+                <form action="/deleteQ" method="get">
+                    <input type="submit" name="deleteEntry" value="Delete Entry">
+                </form>
+                <br>
+                <form action="/loadPage" method="get">
+                    <input type="submit" name="aboutMe" value="About Me">
+                </form>
+                <br>
+                <div>
+                    <form action="/help" method="get">
+                        <input type="submit" name="helpPage" value="Help/FAQ">
+                    </form>
+                </div>
+            </div>
+
+            <!--   Menu Button    -->
+            <div id="Options">
+                <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+            </div>
+
+        </div>
+        </div>
+</body>
+<script>
+    window.onload = function() {var y = document.getElementById("snackbar");y.className = "show";setTimeout(function(){ y.className = y.className.replace("show", ""); }, 3000);}
+</script>
+<h1 style="text-align: center">Item No#{{num}} successfully deleted.</h1>
+<div style="color: #25e59f;"id="snackbar">Item Successfuly Deleted</div>
+
+</html>

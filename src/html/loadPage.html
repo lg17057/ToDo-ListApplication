@@ -1,0 +1,54 @@
+<html>
+  <title>Loading...</title>
+    <head>
+    <meta http-equiv = "refresh" content = "0.7;/aboutMe" />
+    <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+    <style>
+
+    #header {
+      font-family: open-sans,sans-serif;
+      font-weight: 300;
+      font-style: normal;
+
+    }
+    #loader {
+      position: absolute;
+      left: 50%;
+      top: 20%;
+      z-index: 1;
+      width: 60px;
+      height: 60px;
+      margin: -76px 0 0 -76px;
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #3498db;
+      -webkit-animation: spin 2s linear infinite;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .p{
+      visibility: hidden;
+    }
+
+    </style>
+    </head>
+
+    <body>
+
+
+
+                <!-- MAIN CONTENT-->
+    <div style="text-align:center">
+        <h1 id="header"> <em>Loading...</em> </h1>
+        <br>
+        <div id="loader"></div>
+    </div>
+              <!-- MAIN CONTENT-->
+
+
+              
+    </body>

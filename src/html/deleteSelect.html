@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <title>Select Item to Delete</title>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- JAVA SCRIPT-->
+        <script src="/static/openNav.js"></script>
+        <script src="static/success.js"></script>
+        <script src="static/UserSelect.js"></script>
+        <!-- CSS / FONT-->
+        <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Browser Icon-->
+        <link rel="icon" type="image.png" href="static/favicon-16x16.png">
+    </head>
+    <!-- End of Header -->
+    <body>
+        <div>
+            <!-- User Login Buttons-->
+            <div id="userLogin/signUp">
+                <!--
+                <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
+                -->
+                <form action="/loginPage" method="get">
+                    <!-- Login   Button-->
+                    <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                </form>
+                <div style="position:relative; top: 1px;">
+                    <form action="/signUp" method="get">
+                        <!-- Sign Up  Button-->
+                        <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                    </form>
+                </div>
+            </div>
+            <!-- User Login Buttions-->
+    
+            <div>
+                <!-- Side Nav Div -->
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <form action="/" method="get">
+                        <input type="submit" name="homeRedirect" value="Home Page">
+                    </form>
+                    <br>
+                    <form action="/userSelectTodo" method="get">
+                        <input type="submit" name="todoList" value="View Entries">
+                    </form>
+                    <br>
+                    <form action="/new" method="get">
+                        <input type="submit" name="saveNew" value="New Entry">
+                    </form>
+                    <br>
+                    <form action="/edit/editSelect" method="get">
+                        <input type="submit" name="editEntry" value="Edit Entry">
+                    </form>
+                    <br>
+                    <form action="/deleteQ" method="get">
+                        <input type="submit" name="deleteEntry" value="Delete Entry">
+                    </form>
+                    <br>
+                    <form action="/loadPage" method="get">
+                        <input type="submit" name="aboutMe" value="About Me">
+                    </form>
+                    <br>
+                    <div>
+                        <form action="/help" method="get">
+                            <input type="submit" name="helpPage" value="Help/FAQ">
+                        </form>
+                    </div>
+                </div>
+    
+                <!--   Menu Button    -->
+                <div id="Options">
+                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+                </div>
+    
+            </div>
+            </div>
+    </body>
+<!-- MAIN CONTENT-->
+
+<div class="center">
+    <div id="chooseItem">
+        <h3> Please choose which item # you would like to delete:</h3>
+            <label>Item No#:</label>
+            <select  title="Choose which item to delete" id="UserDelete" class="center" size="1" required>
+                <optgroup label="To-Do List #1"></optgroup>
+                <option value="/delete/1">1</option>
+                <option value="/delete/2">2</option>
+                <option value="/delete/3">3</option>
+                <option value="/delete/4">4</option>
+                <option value="/delete/5">5</option>
+                <option value="/delete/6">6</option>
+                <option value="/delete/7">7</option>
+                <option value="/delete/8">8</option>
+                <option value="/delete/9">9</option>
+                <option value="/delete/10">10</option>
+                <option value="/delete/11">11</option>
+                <option value="/delete/12">12</option>
+                <option value="/delete/13">13</option>
+                <option value="/delete/14">14</option>
+                <option value="/delete/15">15</option>
+                <option value="/delete/16">16</option>
+                <option value="/delete/17">17</option>
+                <option value="/delete/18">18</option>
+                <option value="/delete/19">19</option>
+                <option value="/delete/20">20</option>
+                <option value="/delete/21">21</option>
+                <option value="/delete/22">22</option>
+                <option value="/delete/23">23</option>
+                <option value="/delete/24">24</option>
+                <option value="/delete/25">25</option>
+                <option value="/delete/26">26</option>
+                <option value="/delete/27">27</option>
+                <option value="/delete/28">28</option>
+                <option value="/delete/29">29</option>
+                <option value="/delete/30">30</option>
+                <option value="/delete/31">31</option>
+                <option value="/delete/32">32</option>
+                <option value="/delete/33">33</option>
+                <option value="/delete/34">34</option>
+                <option value="/delete/35">35</option>
+                <option value="/delete/36">36</option>
+                <option value="/delete/37">37</option>
+                <option value="/delete/38">38</option>
+                <option value="/delete/39">39</option>
+                <option value="/delete/40">40</option>
+                <option value="/delete/41">41</option>
+                <option value="/delete/42">42</option>
+                <option value="/delete/43">43</option>
+                <option value="/delete/44">44</option>
+                <option value="/delete/45">45</option>
+                <option value="/delete/46">46</option>
+                <option value="/delete/47">47</option>
+                <option value="/delete/48">48</option>
+                <option value="/delete/49">49</option>
+                <option value="/delete/50">50</option>
+            </select>
+            <input type="submit" title="Confirm item delete choice"  name="submit" class="saveButtonSmall" value="Submit" onclick="gotwo()">
+    </div>
+    </div>
+    <script>
+        function gotwo() {
+            window.location=document.getElementById("UserDelete").value
+        }
+    </script>
+
+    
+</div> <!-- Center class-->
+<!-- MAIN CONTENT-->
+
+</html>
