@@ -218,7 +218,7 @@ def todo_list():
     TableName = request.forms.get('username')
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    viewusertable = "SELECT id,task FROM [{}] WHERE status LIKE '1'"
+    viewusertable = "SELECT id,task FROM [u] WHERE status LIKE '1'"
     c.execute(viewusertable,(TableName))
     result = c.fetchall()
     c.close()
