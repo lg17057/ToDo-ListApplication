@@ -21,17 +21,20 @@ def login_page():
 
 @post('/loginPage')
 def loginpost():
+    global sesskey
     username = request.forms.get('username')
     password = request.forms.get('password')
     conn = sql.connect('src/db/users.db')
-    usernameCheck = conn.execute("SELECT password FROM user_data WHERE username = (?)", (username,)) 
-    passwordCheck = conn.execute("SELECT username FROM user_data WHERE password = (?)", (password,)) 
-    conn.close()
+    usernameCheck = conn.execute("SELECT username FROM user_data WHERE username = (?)", (username)) 
+    passwordCheck = conn.execute("SELECT password FROM user_data WHERE password = (?)", (password)) 
     if username == usernameCheck and password == passwordCheck: 
+        conn.close()
+        sesskey=1
         return template('src/html/loginSuccess.html')
     else:
         conn.close()
-        return template('src/html/loginFailure.html')
+        sesskey=1
+        return template('src/html/loginFailure.html', sesskey=sesskey)
 
 @route('/status-inactive')
 def whenUserStatusInactive():
@@ -93,7 +96,9 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-    return template('src/html/index')
+    global sesskey
+    sesskey=0
+    return template('src/html/index', sesskey=sesskey)
 ###### INDEX ROUTE ######
 
 #------------------------------------------------------------------------------------------------------------#
