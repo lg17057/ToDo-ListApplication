@@ -221,14 +221,14 @@ def uDeleteChoice():
 def todo_list():
     global tableforuser
     TableName = request.forms.get('username')
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/u.db')
     c = conn.cursor()
-    viewusertable = "SELECT id,task FROM [u] WHERE status LIKE '1'"
-    c.execute(viewusertable,(TableName))
+    viewusertable = "SELECT id, task FROM u WHERE status LIKE '1'"
+    conn.execute(viewusertable,)
     result = c.fetchall()
-    c.close()
-    output = template('src/html/make_table', rows=result)
-    return output
+    conn.close()
+    return template('src/html/make_table', rows=result)
+    
 ###### VIEW ALL OPEN ITEMS ######
 
 #------------------------------------------------------------------------------------------------------------#
