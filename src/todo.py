@@ -25,10 +25,10 @@ def loginpost():
     username = request.forms.get('username')
     password = request.forms.get('password')
     conn = sql.connect('src/db/users.db')
-    usernameCheck = conn.execute("SELECT username FROM user_data WHERE username = (?)", (username)) 
-    passwordCheck = conn.execute("SELECT password FROM user_data WHERE password = (?)", (password)) 
+    usernameCheck = conn.execute("SELECT password FROM user_data WHERE username = (?)", (username,)).fetchone()
+    passwordCheck = conn.execute("SELECT username FROM user_data WHERE password = (?)", (password,)).fetchone()
+    conn.close() 
     if username == usernameCheck and password == passwordCheck: 
-        conn.close()
         sesskey=1
         return template('src/html/loginSuccess.html')
     else:
@@ -219,12 +219,11 @@ def uDeleteChoice():
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
 def todo_list():
-    global tableforuser
     TableName = request.forms.get('username')
-    conn = sql.connect('src/db/u.db')
+    DynamicTable = TableName
+    conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    viewusertable = "SELECT id, task FROM u WHERE status LIKE '1'"
-    conn.execute(viewusertable,)
+    conn.execute('SELECT id, task FROM sqlite_master WHERE (name = ?) AND status LIKE "1"', [DynamicTable] )
     result = c.fetchall()
     conn.close()
     return template('src/html/make_table', rows=result)
