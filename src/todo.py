@@ -12,6 +12,7 @@ import hashlib # Allows password Hashing #
 #------------------------------------------------------------------------------------------------------------#
 
 
+
 ###### LOGIN PAGE ######
 @route('/loginPage')
 def login_page():
@@ -66,7 +67,9 @@ def userSignUp():
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status) VALUES ('This is your first database entry, {tableforuser}',0)"
+           time.sleep(3)
            conn.execute(createTable)
+           time.sleep(1)
            conn.execute(insertTable)       
         conn.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
@@ -223,12 +226,16 @@ def todo_list():
     DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    conn.execute('SELECT id, task FROM sqlite_master WHERE (name = ?) AND status LIKE "1"', [DynamicTable] )
+    data_fetch = "SELECT * FROM sqlite_master WHERE type='table' and name = ?"
+    conn.execute(data_fetch, (DynamicTable,)).fetchone() is not None
     result = c.fetchall()
     conn.close()
     return template('src/html/make_table', rows=result)
     
 ###### VIEW ALL OPEN ITEMS ######
+
+#query = "SELECT 1 FROM sqlite_master WHERE type='table' and name = ?"
+#    return db.execute(query, (name,)).fetchone() is not None
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR USER TO VIEW CLOSED AND OPEN ITEMS IN todo LIST---------------------------------------# VIEW ALL
