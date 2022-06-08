@@ -236,13 +236,14 @@ def uDeleteChoice():
 
 @route('/todo')
 def todo_list():
+
     conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    data_fetch = "SELECT id, task FROM todo WHERE status = 0"
-    conn.execute(data_fetch)
+    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1'")
     result = c.fetchall()
-    conn.close()
-    output = template('src/html/make_table', rows=result )
+    c.close()
+
+    output = template('src/html/make_table', rows=result)
     return output
     
 ###### VIEW ALL OPEN ITEMS ######
@@ -259,7 +260,7 @@ def todo_list_all():
 
     conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    c.execute("SELECT id, task, status, date_due, date_created FROM todo") 
+    c.execute("SELECT id, task, status, date_created, date_due FROM todo") 
     result = c.fetchall()
     c.close()
     print(result)

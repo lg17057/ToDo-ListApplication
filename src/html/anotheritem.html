@@ -81,12 +81,72 @@
     </body>
 <h2 >Would you like to create a new item?;</h2>
 <style>
-#createNo,
-#createNew {
-    display: inline-block;
-    margin: 0 auto;
-    width: 15%
+    .Qblue{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #000000;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  width: 17%;
 }
+.Qblue:hover{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #0074D9;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  opacity: 0.7;
+  width: 17%;
+
+}
+.Qgreen{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #000000;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  width: 17%;
+
+}
+.Qgreen:hover {
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #2ECC40;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.3s;
+  opacity: 0.7;
+  width: 17%;
+
+}
+
 </style>
-<input  title="Confirm No New Item"  id="createNo" type="button" onclick="window.location.href='/'" value="No"><input  title="Confirm Create New Item"  id="createNew" type="button" value="Create New Item" onclick="window.location.href='/new'">
+<input  title="Confirm No New Item" style="width: 17%" class="Qblue" type="button" onclick="window.location.href='/todo'" value="View New Item"><input  title="Confirm Create New Item"  class="Qgreen" type="button" value="Create New Item" onclick="window.location.href='/new'">
 </html>
