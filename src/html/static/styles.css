@@ -204,6 +204,14 @@ input[type=text] {
     outline: none;
   }
 
+
+
+  input[type=date] {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
 /* SAVE BUTTONS STYLE */
 
 .saveButton {
@@ -689,3 +697,4 @@ input[type=text] {
   display: block;
   margin: 0 auto;
 }
+

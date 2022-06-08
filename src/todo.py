@@ -219,18 +219,29 @@ def uDeleteChoice():
 # DESIGNATION PAGE FOR USER TO VIEW ITEMS IN todo LIST-------------------------------------------------------# VIEW 
 #------------------------------------------------------------------------------------------------------------#
 
-###### VIEW ALL OPEN ITEMS ######
+####### VIEW ALL OPEN ITEMS ######
+#@route('/todo')
+#def todo_list():
+#    TableName = request.forms.get('username')
+#    DynamicTable = TableName
+#    conn = sql.connect('src/db/users.db')
+#    c = conn.cursor()
+#    data_fetch = "SELECT id,task FROM sqlite_master WHERE type='table' and name = ?"
+#    conn.execute(data_fetch, (DynamicTable,)).fetchall() is not None
+#    result = c.fetchall()
+#    conn.close()
+#    output = template('src/html/make_table', diagnostic=TableName, rows=result )
+#    return output
+
 @route('/todo')
 def todo_list():
-    TableName = request.forms.get('username')
-    DynamicTable = TableName
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    data_fetch = "SELECT id,task FROM sqlite_master WHERE type='table' and name = ?"
-    conn.execute(data_fetch, (DynamicTable,)).fetchall() is not None
+    data_fetch = "SELECT id, task FROM todo WHERE status = 0"
+    conn.execute(data_fetch)
     result = c.fetchall()
     conn.close()
-    output = template('src/html/make_table', diagnostic=TableName, rows=result )
+    output = template('src/html/make_table', rows=result )
     return output
     
 ###### VIEW ALL OPEN ITEMS ######
@@ -274,10 +285,11 @@ def new_item():
         if request.GET.save:
 
             new = request.GET.task.strip()
+            date_due = request.GET.date_due()
             conn = sql.connect('src/db/todo.db')
             c = conn.cursor()
 
-            c.execute("INSERT INTO todo (task,status) VALUES (?,?)", (new, 1))
+            c.execute("INSERT INTO todo (task,status,date_due) VALUES (?,?,?)", (new, 1, date_due))
             new_id = c.lastrowid
 
             conn.commit()
