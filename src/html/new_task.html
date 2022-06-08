@@ -94,7 +94,7 @@
       <input type="submit" class="saveButton" title="Confirm create new task"  name="save" value="Save">  
      <br> 
      <form action="/new" method="GET">
-     <small>Enter Due Date: </small><input type="date" id="date_due" name="date_due">
+     <!--<small>Enter Due Date: </small>--><input type="date" max="2023-12-31" id="date_due" name="date_due">
      </form>
 
 
@@ -103,7 +103,7 @@
 </div>
 <script>
         var today = new Date().toISOString().split('T')[0];
-    document.getElementsByName("date_due")[0].setAttribute('min', today);
+   document.getElementsByName("date_due")[0].setAttribute('min', today);
 </script>
 <style>
     input[type=date] {
