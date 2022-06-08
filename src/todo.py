@@ -5,6 +5,7 @@ import sqlite3 as sql
 from sqlite3 import *
 from bottle import route, run, debug, template, request, static_file, error, view, default_app
 from bottle import *
+from datetime import date
 import hashlib # Allows password Hashing #
 
 #------------------------------------------------------------------------------------------------------------#
@@ -258,7 +259,7 @@ def todo_list_all():
 
     conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    c.execute("SELECT id, task, status FROM todo") 
+    c.execute("SELECT id, task, status, date_due, date_created FROM todo") 
     result = c.fetchall()
     c.close()
     print(result)
@@ -285,11 +286,17 @@ def new_item():
         if request.GET.save:
 
             new = request.GET.task.strip()
-            date_due = request.GET.date_due()
+            date_due = request.GET.date_due.strip()
             conn = sql.connect('src/db/todo.db')
             c = conn.cursor()
+            now = datetime.now()
+            date_created = now.strftime("%d/%m/%Y %H:%M")
+            #CODE FOR FINDING TIME AND DATE
+            #SELECT strftime('%Y/%m/%d/%H:%M','now','localtime');
+            #CODE FOR FINDING NUMBER OF DAYS,HOURS AND MINUTES SINCE ITEM CREATED
+            #SELECT strftime('%d %h','now','localtime') - strftime('%s','2014-10-07 02:34:56');
 
-            c.execute("INSERT INTO todo (task,status,date_due) VALUES (?,?,?)", (new, 1, date_due))
+            c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
             new_id = c.lastrowid
 
             conn.commit()
