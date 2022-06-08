@@ -65,8 +65,8 @@ def userSignUp():
         tableforuser = request.forms.get('username')
         table_exists = "SELECT username FROM user_data WHERE username = ?"
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
-           createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL)"
-           insertTable = f"INSERT INTO [{tableforuser}](task,status) VALUES ('This is your first database entry, {tableforuser}',0)"
+           createTable = f'CREATE TABLE [{tableforuser}]("id" INTEGER PRIMARY KEY, "task" char(100) NOT NULL, status bool NOT NULL)'
+           insertTable = f'INSERT INTO [{tableforuser}]("task",status) VALUES ("This is your first database entry, {tableforuser}",0)'
            time.sleep(3)
            conn.execute(createTable)
            time.sleep(1)
@@ -226,11 +226,12 @@ def todo_list():
     DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    data_fetch = "SELECT * FROM sqlite_master WHERE type='table' and name = ?"
-    conn.execute(data_fetch, (DynamicTable,)).fetchone() is not None
+    data_fetch = "SELECT id,task FROM sqlite_master WHERE type='table' and name = ?"
+    conn.execute(data_fetch, (DynamicTable,)).fetchall() is not None
     result = c.fetchall()
     conn.close()
-    return template('src/html/make_table', rows=result)
+    output = template('src/html/make_table', diagnostic=TableName, rows=result )
+    return output
     
 ###### VIEW ALL OPEN ITEMS ######
 
