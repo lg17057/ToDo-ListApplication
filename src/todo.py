@@ -108,6 +108,14 @@ def home_page():
 ###### INDEX ROUTE ######
 
 #------------------------------------------------------------------------------------------------------------#
+# DESIGNATION FOR INVALID ITEM FOUND WHEN MODIFYING-----------------------------------------------------------# ITEM NOT FOUND
+#------------------------------------------------------------------------------------------------------------#
+
+@route('/item_not_found')
+def invalid_item_triggered():
+    return template('src/html/invalid_item.html')
+
+#------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO EDIT SELECTED ITEM-----------------------------------------------------------------# EDIT 
 #------------------------------------------------------------------------------------------------------------#
 
@@ -134,6 +142,8 @@ def edit_item(no):
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
+        if not cur_data:
+            redirect('/item_not_found')
         return template('src/html/edit_task.html', old=cur_data, no=no)
     
 ###### EDIT ITEM (INT) ######
@@ -204,6 +214,8 @@ def delete(no):
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
+        if not cur_data:
+            redirect('/item_not_found')
         return template('src/html/delete.html', old=cur_data, no=no)
 ###### DELETE ITEM ######
 
