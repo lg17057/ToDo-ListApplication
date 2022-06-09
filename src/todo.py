@@ -61,13 +61,15 @@ def userSignUp():
     password = request.forms.get('password')
     cur = conn.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
     checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
+    now = datetime.now()
+    date_created = now.strftime("%d/%m/%Y %H:%M")
     if checkUsername != 0:
         global tableforuser
         tableforuser = request.forms.get('username')
         table_exists = "SELECT username FROM user_data WHERE username = ?"
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
-           createTable = f'CREATE TABLE [{tableforuser}]("id" INTEGER PRIMARY KEY, "task" char(100) NOT NULL, status bool NOT NULL)'
-           insertTable = f'INSERT INTO [{tableforuser}]("task",status) VALUES ("This is your first database entry, {tableforuser}",0)'
+           createTable = f'CREATE TABLE [{tableforuser}]("id" INTEGER PRIMARY KEY, "task" char(100) NOT NULL, "status" bool NOT NULL, "date_due" TEXT NOT NULL, "date_created" TEXT NOT NULL)'
+           insertTable = f'INSERT INTO [{tableforuser}]("task","status","date_due","date_created") VALUES ("This is your first database entry, {tableforuser}",0,"ServerCreatedData","ServerCreatedData"'
            time.sleep(3)
            conn.execute(createTable)
            time.sleep(1)
