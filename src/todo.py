@@ -115,6 +115,10 @@ def home_page():
 def invalid_item_triggered():
     return template('src/html/invalid_item.html')
 
+@route('/no_items_in_database')
+def no_items_in_database():
+    return template('src/html/no_items_in_database.html')
+
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO EDIT SELECTED ITEM-----------------------------------------------------------------# EDIT 
 #------------------------------------------------------------------------------------------------------------#
@@ -169,7 +173,7 @@ def delete_query():
     return output
 
 #------------------------------------------------------------------------------------------------------------#
-# DESIGNATION FOR USER TO DELETE ALL ITEMS-------------------------------------------------------------------# DELETE ALL
+# DESIGNATION OR USER TO DELETE ALL ITEMS-------------------------------------------------------------------# DELETE ALL
 #------------------------------------------------------------------------------------------------------------# 
 
 ##### DELETE ALL ITEMS ####
@@ -178,9 +182,12 @@ def deleteALLitems():
     if request.GET.save:
         conn = sql.connect('src/db/todo.db')
         c = conn.cursor()
+        result = c.fetchall()
         c.execute("DELETE FROM todo")
         conn.commit()
         c.close()
+        if not result:
+            redirect('/no_items_in_database')
         return template('src/html/deleteALLitemsuccess')
     else:
 
@@ -256,7 +263,8 @@ def todo_list():
     c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1'")
     result = c.fetchall()
     c.close()
-
+    if not result:
+        redirect('/no_items_in_database')
     output = template('src/html/make_table', rows=result)
     return output
     
@@ -276,7 +284,10 @@ def todo_list_all():
     c = conn.cursor()
     c.execute("SELECT id, task, status, date_created, date_due FROM todo") 
     result = c.fetchall()
+    
     c.close()
+    if not result:
+        redirect('/no_items_in_database')
     print(result)
     output = template('src/html/ALLitems.html', rows=result)
     return output
