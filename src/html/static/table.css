@@ -26,3 +26,7 @@
 .todoTable tr:nth-child(even,odd){background-color: #f2f2f2;}
 .todoTable tr:hover {background-color: #ddd;}
 .todoTable tr:hover TD:nth-child(1){font-weight: bold}
+
+th {
+  cursor: pointer;
+}

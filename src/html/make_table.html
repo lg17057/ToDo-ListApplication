@@ -5,9 +5,9 @@
     <!-- JAVA SCRIPT-->
     <script src="/static/openNav.js"></script>
     <script src="static/success.js"></script>
-    <script src="static/UserSelect.js"></script>
+    <script src="static/tableSort.js"></script>
     <!-- CSS / FONT-->
-    <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+    <link rel="stylesheet" type="text/css" href="static/table.css">
     <link rel="stylesheet" type="text/css" href="static/styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -80,19 +80,19 @@
 </body>
           <!-- MAIN CONTENT-->
           <div>
-            <p><button onclick="sortTable()">Sort</button></p>
             <h3>The Current Entries are as follows:</h3>
+            <small>To sort table, click headers.</small>
             <table id="myTable" class="todoTable">
-              <th>
+              <th onclick="sortbynumber()" title="Sort By Number">
                 #Num  
               </th>
-              <th>
+              <th onclick="sortTable(0)" title="Sort Alphabetically">
                 Description
               </th>
-              <th>
+              <th onclick="sortTable(1)" title="Sort by Date Created">
                 Date Created:
               </th>
-              <th>
+              <th onclick="sortTable(1)" title="Sort by Date Due">
                 Date Due:
               </th>
             %for row in rows:
@@ -105,72 +105,6 @@
             </table>
           </div>
           <!-- MAIN CONTENT-->
-          <style>
-            .todoTable {
-              border: 2px solid #000000;
-            }
-            .todoTable tr {
-              font-family: open-sans,sans-serif;
-              font-weight: 400;
-              font-style:normal;
-            }
 
-            .todoTable td {
-              border: 1px solid #000000;
-              border-style:solid;
-            }
-            
-            .todoTable th {
-              padding-top: 6px;
-              padding-bottom: 6px;
-              text-align: left;
-              background-color: #04AA6D;
-              color: rgb(0, 0, 0);
-              font-family: open-sans, sans-serif;
-              font-weight: 300;
-              font-style: normal;
-            }
-            /* changes row colours */
-            .todoTable tr:nth-child(even,odd){background-color: #f2f2f2;}
-            .todoTable tr:hover {background-color: #ddd;}
-            .todoTable tr:hover TD:nth-child(1){font-weight: bold}
-        </style>
-        <script>
-          function sortTable() {
-            var table, rows, switching, i, x, y, shouldSwitch;
-            table = document.getElementById("myTable");
-            switching = true;
-            /*Make a loop that will continue until
-            no switching has been done:*/
-            while (switching) {
-              //start by saying: no switching is done:
-              switching = false;
-              rows = table.rows;
-              /*Loop through all table rows (except the
-              first, which contains table headers):*/
-              for (i = 1; i < (rows.length - 1); i++) {
-                //start by saying there should be no switching:
-                shouldSwitch = false;
-                /*Get the two elements you want to compare,
-                one from current row and one from the next:*/
-                x = rows[i].getElementsByTagName("TD")[0];
-                y = rows[i + 1].getElementsByTagName("TD")[0];
-                //check if the two rows should switch place:
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                  //if so, mark as a switch and break the loop:
-                  shouldSwitch = true;
-                  break;
-                }
-              }
-              if (shouldSwitch) {
-                /*If a switch has been marked, make the switch
-                and mark that a switch has been done:*/
-                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-              }
-            }
-          }
-          </script>
-    
 </html>
 
