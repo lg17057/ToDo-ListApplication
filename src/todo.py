@@ -119,6 +119,18 @@ def invalid_item_triggered():
 def no_items_in_database():
     return template('src/html/no_items_in_database.html')
 
+@route('/maximumDataEntries')
+def maximumDataEntries():
+    return template('src/html/too_many_items.html')
+
+@route('/contact_form')
+def emailForm():
+    userOutput = template('src/html/email_form.html')
+    return userOutput
+
+
+
+
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO EDIT SELECTED ITEM-----------------------------------------------------------------# EDIT 
 #------------------------------------------------------------------------------------------------------------#
@@ -260,7 +272,7 @@ def todo_list():
 
     conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1'")
+    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1' LIMIT 50")
     result = c.fetchall()
     c.close()
     if not result:
@@ -282,7 +294,7 @@ def todo_list_all():
 
     conn = sql.connect('src/db/todo.db')
     c = conn.cursor()
-    c.execute("SELECT id, task, status, date_created, date_due FROM todo") 
+    c.execute("SELECT id, task, status, date_created, date_due FROM todo LIMIT 50") 
     result = c.fetchall()
     
     c.close()
@@ -321,14 +333,17 @@ def new_item():
             #SELECT strftime('%Y/%m/%d/%H:%M','now','localtime');
             #CODE FOR FINDING NUMBER OF DAYS,HOURS AND MINUTES SINCE ITEM CREATED
             #SELECT strftime('%d %h','now','localtime') - strftime('%s','2014-10-07 02:34:56');
-
-            c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
-            new_id = c.lastrowid
-
-            conn.commit()
-            c.close()
-
-            return template('src/html/itemCreated.html')
+            c.execute('SELECT COUNT (*) from todo')
+            cur_result = c.fetchone()
+            rows = cur_result[0]
+            if rows > 50:
+                print("BallsErrors")
+            elif rows < 50:
+                c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
+                new_id = c.lastrowid
+                conn.commit()
+                c.close()
+                return template('src/html/itemCreated.html', rows=rows)
             
         else:
             return template('src/html/new_task.html')
@@ -461,17 +476,7 @@ def colourselect():
 
 ##### COLOUR OPTION ######
 
-##### EMAIL FORM #####
-@route('/emailForm')
-def emailForm():
-    userOutput = template('src/html/emailForm.html')
-    return userOutput
 
-@route('/contact-form-process')
-def emailform():
-    userOutput = template('src/php/contact-form-process.html')
-    return userOutput
-#### PHP EMAIL FORM ####
 
 
 #------------------------------------------------------------------------------------------------------------#

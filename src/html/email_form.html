@@ -1,5 +1,6 @@
+<!DOCTYPE html>
 <html>
-    <title>Help Page</title>
+    <title>To-Do List</title>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- JAVA SCRIPT-->
@@ -78,56 +79,28 @@
             </div>
             </div>
     </body>
-        <!-- Main Section-->
-            <div>
-                        <!-- MAIN CONTENT-->
-                <h2 class="header">FAQ - Help</h2>
-                <button class="accordion">How can I contact staff?</button>
-                <div   title="Click here to access information"  class="panel">
-                  <p>To create a request to our staff, please visit this page and send a query:</p>
-                  <br>
-                </div>
-                <button class="accordion">How do I change my password?</button>
-                <div  title="Click here to access information" class="panel">
-                    <p>Currently, you are unable to change your password. To request a feature, see the button at the bottom of the page.</p>
-                </div>
-                <button class="accordion">Am I able to delete my account?</button>
-                <div title="Click here to access information" class="panel">
-                  <p>Currently, you are unable to delete your account. To request a feature, see the button at the bottom of the page.</p>
-                </div>
-                <button class="accordion">How many ToDo list entries can I have?</button>
-                <div title="Click here to access information" class="panel">
-                  <p>You can only have 50 entries in your To Do list.</p>
-                </div>
-                
-                <hr>
-                <button style="display:inline-block" onclick="window.location.href='/contact_form'" class="request login">Request a Feature</button>  or  <button  onclick="window.location.href='/contact_form'"    style="display:inline-block"  class="request login">Report a Bug</button>
+ <!--- Main Content-->
 
-                          <!-- MAIN CONTENT-->
-            </div>
-            <!-- Main Section -->
-
-<script>
-var acc = document.getElementsByClassName("accordion");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var panel = this.nextElementSibling;
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    } 
-  });
-}
-</script>
-
+<div>
     
+
+    <!--   To Do List Header    -->
+    
+
+<h2>Contact Form</h2>
+
+<form action="mailto:liamguerin07@gmail.com" method="post" enctype="text/plain">
+Name:<br>
+<input type="text" name="name"><br>
+E-mail:<br>
+<input type="text" name="mail"><br>
+Subject:<br>
+<input type="text" name="comment" size="100"><br><br>
+<input type="submit" value="Send">
+<input type="reset" value="Reset">
+</form>
+
+
+
+<!-- Main Content-->
 </html>
-                    
-
-
-
-
