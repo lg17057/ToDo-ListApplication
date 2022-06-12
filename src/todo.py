@@ -320,33 +320,28 @@ def todo_list_query():
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
-
-        if request.GET.save:
-
+    if request.GET.save:
+        conn = sql.connect('src/db/todo.db')
+        c = conn.cursor()
+        c.execute('SELECT COUNT (*) from todo')
+        cur_result = c.fetchone()
+        rows = cur_result[0]
+        if rows < 50:
             new = request.GET.task.strip()
             date_due = request.GET.date_due.strip()
             conn = sql.connect('src/db/todo.db')
             c = conn.cursor()
             now = datetime.now()
             date_created = now.strftime("%d/%m/%Y %H:%M")
-            #CODE FOR FINDING TIME AND DATE
-            #SELECT strftime('%Y/%m/%d/%H:%M','now','localtime');
-            #CODE FOR FINDING NUMBER OF DAYS,HOURS AND MINUTES SINCE ITEM CREATED
-            #SELECT strftime('%d %h','now','localtime') - strftime('%s','2014-10-07 02:34:56');
-            c.execute('SELECT COUNT (*) from todo')
-            cur_result = c.fetchone()
-            rows = cur_result[0]
-            if rows > 50:
-                print("BallsErrors")
-            elif rows < 50:
-                c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
-                new_id = c.lastrowid
-                conn.commit()
-                c.close()
-                return template('src/html/itemCreated.html', rows=rows)
-            
-        else:
-            return template('src/html/new_task.html')
+            c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
+            new_id = c.lastrowid
+            conn.commit()
+            c.close()
+            return template('src/html/itemCreated.html', rows=rows)
+        elif rows >= 50:
+            return '<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
+    else:
+        return template('src/html/new_task.html')
 ###### CREATE NEW ITEM ######
 
 #------------------------------------------------------------------------------------------------------------#
