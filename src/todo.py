@@ -338,7 +338,7 @@ def new_item():
             conn.commit()
             c.close()
             return template('src/html/itemCreated.html', rows=rows)
-        elif rows >= 50:
+        elif rows > 50:
             return '<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
     else:
         return template('src/html/new_task.html')
