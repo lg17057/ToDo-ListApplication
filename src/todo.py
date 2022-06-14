@@ -29,14 +29,14 @@ def loginpost():
     conn = sql.connect('src/db/users.db')
     usernameCheck = conn.execute("SELECT password FROM user_data WHERE username = (?)", (username,)).fetchone()
     passwordCheck = conn.execute("SELECT username FROM user_data WHERE password = (?)", (password,)).fetchone()
-    conn.close() 
+     
     if username == usernameCheck and password == passwordCheck: 
         sesskey=1
-        return template('src/html/loginSuccess.html')
-    else:
-        conn.close()
-        sesskey=1
+        return template('src/html/loginSuccess.html', sesskey=sesskey)
+    elif username != usernameCheck and password != passwordCheck:
+        sesskey=0
         return template('src/html/loginFailure.html', sesskey=sesskey)
+    
 
 @route('/status-inactive')
 def whenUserStatusInactive():
@@ -69,7 +69,7 @@ def userSignUp():
         table_exists = "SELECT username FROM user_data WHERE username = ?"
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
            createTable = f'CREATE TABLE [{tableforuser}]("id" INTEGER PRIMARY KEY, "task" char(100) NOT NULL, "status" bool NOT NULL, "date_due" TEXT NOT NULL, "date_created" TEXT NOT NULL)'
-           insertTable = f'INSERT INTO [{tableforuser}]("task","status","date_due","date_created") VALUES ("This is your first database entry, {tableforuser}",0,"ServerCreatedData","ServerCreatedData"'
+           insertTable = f'INSERT INTO [{tableforuser}]("task","status","date_due","date_created") VALUES ("This is your first database entry, {tableforuser}",0,"ServerCreatedData","ServerCreatedData")'
            time.sleep(3)
            conn.execute(createTable)
            time.sleep(1)
@@ -200,6 +200,7 @@ def deleteALLitems():
         c.close()
         if not result:
             redirect('/no_items_in_database')
+           
         return template('src/html/deleteALLitemsuccess')
     else:
 
@@ -253,33 +254,33 @@ def uDeleteChoice():
 # DESIGNATION PAGE FOR USER TO VIEW ITEMS IN todo LIST-------------------------------------------------------# VIEW 
 #------------------------------------------------------------------------------------------------------------#
 
-####### VIEW ALL OPEN ITEMS ######
-#@route('/todo')
-#def todo_list():
-#    TableName = request.forms.get('username')
-#    DynamicTable = TableName
-#    conn = sql.connect('src/db/users.db')
-#    c = conn.cursor()
-#    data_fetch = "SELECT id,task FROM sqlite_master WHERE type='table' and name = ?"
-#    conn.execute(data_fetch, (DynamicTable,)).fetchall() is not None
-#    result = c.fetchall()
-#    conn.close()
-#    output = template('src/html/make_table', diagnostic=TableName, rows=result )
-#    return output
-
+###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
 def todo_list():
-
-    conn = sql.connect('src/db/todo.db')
+    TableName = request.forms.get('username')
+    DynamicTable = TableName
+    conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1' LIMIT 50")
+    data_fetch = '''SELECT *  FROM sqlite_master WHERE type = 'table' AND name = ?''', [DynamicTable]
+    conn.execute(data_fetch)
     result = c.fetchall()
-    c.close()
-    if not result:
-        redirect('/no_items_in_database')
-    output = template('src/html/make_table', rows=result)
+    output = template('src/html/make_table', diagnostic=TableName, rows=result )
+    conn.close()
     return output
-    
+
+#@route('/todo') execute("SELECT weight FROM Equipment WHERE name = :name AND price = :price",
+#def todo_list():
+#
+#    conn = sql.connect('src/db/todo.db')
+#    c = conn.cursor()
+#    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1' LIMIT 50")
+#    result = c.fetchall()
+#    c.close()
+#    if not result:
+#        redirect('/no_items_in_database')
+#    output = template('src/html/make_table', rows=result)
+#    return output
+#    
 ###### VIEW ALL OPEN ITEMS ######
 
 #query = "SELECT 1 FROM sqlite_master WHERE type='table' and name = ?"
