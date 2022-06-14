@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+    <!-- Browser Icon-->
+    <link rel="icon" type="image.png" href="favicon-16x16.png">
+    <div>
+        <!-- Style -->
+        <style>
+            .header {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+            }
+            
+            .submit {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 14px 28px;
+                border: 2px solid #808080;
+                text-decoration: none;
+                font-size: 16px;
+                color: #808080;
+                cursor: pointer;
+                background-color: #000000;
+                display: block;
+                transition: 0.3s;
+            }
+            
+            .div .signIn:hover {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                color: #04AA6D;
+                border: 2px solid #04AA6D;
+            }
+            
+            .sidenav {
+                height: 100%;
+                width: 0;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                background-color: #000000;
+                overflow-x: hidden;
+                transition: 0.3s;
+                padding-top: 60px;
+            }
+            
+            .sidenav input {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 14px 28px;
+                border: 2px solid #808080;
+                text-decoration: none;
+                font-size: 16px;
+                color: #808080;
+                cursor: pointer;
+                background-color: #000000;
+                display: block;
+                transition: 0.3s;
+            }
+            
+            .sidenav input:hover {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 14px 28px;
+                border: 2px solid #04AA6D;
+                border-radius: 6px;
+                text-decoration: none;
+                font-size: 16px;
+                color: #04AA6D;
+                cursor: pointer;
+                background-color: #000000;
+                display: block;
+                transition: 0.1s;
+            }
+            
+            .sidenav .closebtn {
+                color: #ffffff;
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 36px;
+                margin-left: 50px;
+            }
+            
+            .sidenav .closebtn:hover {
+                color: #04AA6D;
+            }
+            
+            @media screen and (max-height: 450px) {
+                .sidenav {
+                    padding-top: 15px;
+                }
+                .sidenav a {
+                    font-size: 18px;
+                }
+            }
+            
+
+            .signin {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 9px 18px;
+                border: none;
+                text-decoration: none;
+                font-size: 16px;
+                color: #000000;
+                cursor: pointer;
+                background-color: #FFFFFF;
+                display: block;
+                transition: 0.2s;
+            }
+            
+            .signin:hover {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 9px 18px;
+                border: none;
+                text-decoration: none;
+                font-size: 16px;
+                color: #04AA6D;
+                cursor: pointer;
+                background-color: #FFFFFF;
+                display: block;
+                transition: 0.3s;
+            }
+            
+            .login {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                padding: 9px 18px;
+                border: 2px solid #038a58;
+                border-radius: 16px;
+                text-decoration: none;
+                font-size: 16px;
+                color: #FFFFFF;
+                cursor: pointer;
+                background-color: #04AA6D;
+                display: block;
+                transition: 0.3s;
+            }
+            
+            .login:hover {
+                font-family: open-sans, sans-serif;
+                font-weight: 300;
+                font-style: normal;
+                border-radius: 18px;
+                border: 2px solid #04AA6D;
+                color: #FFFFFF;
+                cursor: pointer;
+                background-color: #04AA6D;
+                display: block;
+                transition: 0.3s;
+            }
+        </style>
+    </div>
+    <!-- Style -->
+</head>
+<!-- End of Header -->
+
+<body>
+    <div>
+        <!-- User Login Buttons-->
+        <div id="UserNotLoggedIn">
+            <form action="/signUp" method="get">
+                <!-- Login   Button-->
+                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+            </form>
+            <div style="position:relative; top: 1px;">
+                <form action="/login" method="get">
+                    <!-- Sign Up  Button-->
+                    <input type="submit" class="signin" name="signUpPage" value="Sign Up" style="float: right;">
+                </form>
+            </div>
+        </div>
+        <!-- User Login Buttions-->
+
+        <div>
+            <!-- Side Nav Div -->
+            <div id="mySidenav" class="sidenav">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <form action="/" method="get">
+                    <input type="submit" name="homeRedirect" value="Home Page">
+                </form>
+                <br>
+                <form action="/todo" method="get">
+                    <input type="submit" name="todoList" value="View Entries">
+                </form>
+                <br>
+                <form action="/new" method="get">
+                    <input type="submit" name="saveNew" value="New Entry">
+                </form>
+                <br>
+                <form action="/edit/1" method="get">
+                <input type="submit"  name="edit" value="Edit Entry">
+                </form>
+
+                <br>
+                <form action="/delete" method="get">
+                    <input type="submit" name="deletePage" value="Delete Entry">
+                </form>
+                <br>
+                <form action="/loadPage" method="get">
+                    <input type="submit" name="aboutMe" value="About Me">
+                </form>
+                <br><br><br><br><br><br><br><br><br><br>
+                <div>
+                    <form action="/help" method="get">
+                        <input type="submit" name="helpPage" value="Help/FAQ">
+                    </form>
+                </div>
+                <br>
+            </div>
+
+            <!--   Menu Button    -->
+            <div id="Options">
+                <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+            </div>
+
+            <div>
+                <!-- JAVASCRIPT - Side_Nav SCRIPT -->
+                <script>
+                    function openNav() {
+                        document.getElementById("mySidenav").style.width = "250px";
+                    }
+
+                    function closeNav() {
+                        document.getElementById("mySidenav").style.width = "0px";
+                    }
+                </script>
+            </div>
+            <!-- JAVASCRIPT - Side_Nav  SCRIPT-->
+            <div>
+                
+        </div>
+    </div>
+    <!-- END OF THE ENTIRE SIDENAV/LOGIN/SCRIPT DIV-->
+</body>
+ <!--- Main Content-->
+<div>
+    <h2 style=" font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">There was an error with the action you just attempted</h2>
+    <h2 style=" font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Error Key:</h2>
+    <h3 style=" font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">({{errorkey}})</h3>
+
+
+</div>
+<!-- Main Content-->
+</html>
