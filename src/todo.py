@@ -1,6 +1,7 @@
 #------------------------------------------------------------------------------------------------------------#
 # IMPORTING REQUIRED ITEMS-----------------------------------------------------------------------------------# IMPORTING REQUIRED ITEMS
 #------------------------------------------------------------------------------------------------------------#
+from select import select
 import sqlite3 as sql
 from sqlite3 import *
 from bottle import route, run, debug, template, request, static_file, error, view, default_app
@@ -259,7 +260,8 @@ def todo_list():
     DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    c.execute('''SELECT * FROM sqlite_master WHERE type = 'table' AND name = ?''', [DynamicTable])
+    select_items = f'''SELECT id,task,status,date_due,date_created FROM [{DynamicTable}] WHERE status='0' '''
+    c.execute(select_items)
     print("Accessing table name {}".format(DynamicTable))
     result = c.fetchall()
     conn.close()
