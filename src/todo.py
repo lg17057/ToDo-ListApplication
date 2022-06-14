@@ -21,22 +21,25 @@ def login_page():
     return userOutput
     
 
-@post('/loginPage')
+@route('/loginPage')
 def loginpost():
-    global sesskey
-    username = request.forms.get('username')
-    password = request.forms.get('password')
-    conn = sql.connect('src/db/users.db')
-    usernameCheck = conn.execute("SELECT password FROM user_data WHERE username = (?)", (username,)).fetchone()
-    passwordCheck = conn.execute("SELECT username FROM user_data WHERE password = (?)", (password,)).fetchone()
-     
-    if username == usernameCheck and password == passwordCheck: 
-        sesskey=1
-        return template('src/html/loginSuccess.html', sesskey=sesskey)
-    elif username != usernameCheck and password != passwordCheck:
-        sesskey=0
-        return template('src/html/loginFailure.html', sesskey=sesskey)
-    
+    if request.GET.login:
+        global sesskey
+        username = request.forms.get('username')
+        password = request.forms.get('password')
+        conn = sql.connect('src/db/users.db')
+        c = conn.cursor()
+        usernameCheck = c.execute("SELECT password FROM user_data WHERE username = (?)", (username,)).fetchone()
+        passwordCheck = c.execute("SELECT username FROM user_data WHERE password = (?)", (password,)).fetchone()
+
+        if username == usernameCheck and password == passwordCheck: 
+            sesskey=1
+            return template('src/html/loginSuccess.html', sesskey=sesskey)
+        elif username != usernameCheck and password != passwordCheck:
+            sesskey=0
+            return template('src/html/loginFailure.html', sesskey=sesskey)
+    else:
+        return template('src/html/loginPage')
 
 @route('/status-inactive')
 def whenUserStatusInactive():
@@ -262,11 +265,12 @@ def todo_list():
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
     data_fetch = '''SELECT *  FROM sqlite_master WHERE type = 'table' AND name = ?''', [DynamicTable]
-    conn.execute(data_fetch)
+    c.execute('''SELECT *  FROM sqlite_master WHERE type = 'table' AND name = ?''', [DynamicTable])
+    print("Accessing table name {}".format(DynamicTable))
     result = c.fetchall()
-    output = template('src/html/make_table', diagnostic=TableName, rows=result )
     conn.close()
-    return output
+    return template('src/html/make_table', diagnostic=TableName, rows=result )
+
 
 #@route('/todo') execute("SELECT weight FROM Equipment WHERE name = :name AND price = :price",
 #def todo_list():
