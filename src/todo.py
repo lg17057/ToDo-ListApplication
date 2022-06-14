@@ -46,36 +46,38 @@ def whenUserStatusInactive():
 
 ###### SIGN UP PAGE ######
 @route('/signUp')
+def signUp():
+    return template('src/html/signUp')
+
+@post('/signUp')
 def userSignUp():
-    if request.GET.signup:
-        conn = sql.connect('src/db/users.db')
-        c = conn.cursor()
-        username = request.forms.get('username')
-        password = request.forms.get('password')
-        cur = c.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
-        checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
-        now = datetime.now()
-        date_created = now.strftime("%d/%m/%Y %H:%M")
-        if checkUsername != 0:
-            global tableforuser
-            tableforuser = request.forms.get('username')
-            table_exists = "SELECT username FROM user_data WHERE username = ?"
-            if not c.execute(table_exists, (tableforuser,)).fetchone():
-               createTable = f'CREATE TABLE [{tableforuser}]("id" INTEGER PRIMARY KEY, "task" char(100) NOT NULL, "status" bool NOT NULL, "date_due" TEXT NOT NULL, "date_created" TEXT NOT NULL)'
-               insertTable = f'INSERT INTO [{tableforuser}]("task","status","date_due","date_created") VALUES ("This is your first database entry, {tableforuser}",0,"ServerCreatedData","ServerCreatedData")'
-               time.sleep(3)
-               conn.execute(createTable)
-               time.sleep(1)
-               conn.execute(insertTable)       
-               conn.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
-               conn.commit()
-               conn.close()
-               redirect('/loginPage')
-        else:
-            signuperror = "There was an error with creating user data {}".format(tableforuser)
-            return template('src/html/error_occured.html', errorkey=signuperror)
+    conn = sql.connect('src/db/users.db')
+    c = conn.cursor()
+    username = request.forms.get('username')
+    global tableforuser
+    tableforuser = username
+    
+    password = request.forms.get('password')
+    cur = c.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
+    checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
+    now = datetime.now()
+    date_created = now.strftime("%d/%m/%Y %H:%M")
+    if checkUsername != 0:
+        table_exists = "SELECT username FROM user_data WHERE username = ?"
+        if not conn.execute(table_exists, (tableforuser,)).fetchone():
+           createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL)"
+           insertTable = f"INSERT INTO [{tableforuser}](task,status) VALUES ('This is your first database entry, {tableforuser}',0)"
+           time.sleep(3)
+           conn.execute(createTable)
+           time.sleep(1)
+           conn.execute(insertTable)       
+        conn.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
+        conn.commit()
+        conn.close()
+        redirect('/loginPage')
     else:
-        return template('src/html/signUp')
+        signuperror = "There was an error with creating user data {}".format(tableforuser)
+        return template('src/html/error_occured.html', errorkey=signuperror)
 ###### SIGN UP PAGE ######
 
 
@@ -257,7 +259,7 @@ def todo_list():
     DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    c.execute('''SELECT * FROM sqlite_master WHERE status = '0' AND type = 'table' AND name = ?''', [DynamicTable])
+    c.execute('''SELECT * FROM sqlite_master WHERE type = 'table' AND name = ?''', [DynamicTable])
     print("Accessing table name {}".format(DynamicTable))
     result = c.fetchall()
     conn.close()
