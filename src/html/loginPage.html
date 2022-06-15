@@ -84,19 +84,21 @@
     </body>
 
 
-          <!-- MAIN CONTENT-->
 <div id="loginDiv" style="text-align:center">
-    <form action="/loginPage" method="get" autocomplete="off">
+    <form action="/loginPage" method="post">
         <div class="container">
         <h1 style="text-align:center;"> Welcome to the Log In page </h1>
         <h2 style="text-align:center;">Enter Credentials: </h2>
         <hr>
-         Username: <input  type="text" placeholder="Username" spellcheck="false" name="uname" title="Enter your username here" id="username-input" required/> 
-         Password: <input type="password" placeholder="Password" spellcheck="false" name="pword"  title="Enter your password here" id="password-input" required/>
+         Username: <input  type="text" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
+         Password: <input type="password" placeholder="Password" spellcheck="false" name="password"  title="Enter your password here" id="password-input" required/>
          <hr>
          
          <input name="login" value="Login" type="submit" class="loginBtn"/><input value="Sign Up" onclick="window.location.href='signUp';" type="button" class="signupBtn" name="signUp"/>
     </form>
 </div>
+
+
+
           <!-- MAIN CONTENT-->       
 </html>

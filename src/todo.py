@@ -2,6 +2,7 @@
 # IMPORTING REQUIRED ITEMS-----------------------------------------------------------------------------------# IMPORTING REQUIRED ITEMS
 #------------------------------------------------------------------------------------------------------------#
 from select import select
+import re
 import sqlite3 as sql
 from sqlite3 import *
 from bottle import route, run, debug, template, request, static_file, error, view, default_app
@@ -13,37 +14,72 @@ import hashlib # Allows password Hashing #
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
 #------------------------------------------------------------------------------------------------------------#
 
+def check_login(username, password):
+    conn = sql.connect('src/db/users.db')
+    c = conn.cursor()
+    usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
+    passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
 
-
-###### LOGIN PAGE ######
 @route('/loginPage')
-def loginpost():
-    if request.GET.login:
-        global sesskey
-        username = request.GET.login('uname')
-        password = request.GET.login('pword')
-        tablename = username
-        tablevalue = password
-        conn = sql.connect('src/db/users.db')
-        c = conn.cursor()
-        usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
-        passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
-        if password == passwordCheck and username == usernameCheck:
-            print(username)
-            select_items = f'''SELECT * FROM [{tablename}]'''
-            c.execute(select_items)
-            print("Accessing table name {}, using password {}".format(tablename,password))
-            result = c.fetchall()
-            sesskey=1
-            return template('src/html/make_table.html',diagnostic=username, rows=result, sesskey=sesskey)
-        else: #if password != passwordCheck or username != usernameCheck:
-            sesskey=0
-            conn.close()
-            return template('src/html/loginFailure.html', sesskey=sesskey)
-        conn.close()
+def login():
+    return template('src/html/loginPage.html')
 
-    else:
-        return template('src/html/loginPage')
+@route('/loginPage', method='POST')
+def do_login():
+    global username, sesskey, password
+    sesskey = 0
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    conn = sql.connect('src/db/users.db')
+    c = conn.cursor()
+    usernameCheck = c.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
+    passwordCheck = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
+    print(usernameCheck)
+    print(passwordCheck)
+    one = 1
+    if username == usernameCheck and password == passwordCheck:
+        select_items = f'''SELECT * FROM [{username}]'''
+        c.execute(select_items)
+        print("Accessing table name {}, using password {}".format(username,password))
+        result = c.fetchall()
+        sesskey=1
+        conn.close()
+        return template('src/html/make_table.html',diagnostic=username, rows=result, sesskey=sesskey)
+    elif username != usernameCheck or password != passwordCheck:
+        sesskey=0
+        print("Accessing table name {}, using password {}".format(username,password))
+        conn.close()
+        return template('src/html/loginFailure.html', sesskey=sesskey)
+    
+   
+
+####### LOGIN PAGE ######
+#@post('/loginPage', method='POST')
+#def login():
+#        global sesskey
+#        global tablename
+#        sesskey = 0
+#        tablename = 'first'
+#        tablename = request.forms.get('username').strip()
+#        tablepass = request.forms.get('password').strip()
+#        conn = sql.connect('src/db/users.db')
+#        
+#        c = conn.cursor()
+#        usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (tablepass,)).fetchone()
+#        passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (tablename,)).fetchone()
+#        if tablepass == passwordCheck and tablename == usernameCheck:
+#            print(tablename)
+#            select_items = f'''SELECT * FROM [{tablename}]'''
+#            c.execute(select_items)
+#            print("Accessing table name {}, using password {}".format(tablename,tablepass))
+#            result = c.fetchall()
+#            sesskey=1
+#            conn.close()
+#            return template('src/html/make_table.html',diagnostic=tablename, rows=result, sesskey=sesskey)
+#        else: #if password != passwordCheck or username != usernameCheck:
+#            sesskey=0
+#            conn.close()
+#            return template('src/html/loginFailure.html', sesskey=sesskey)
 
 @route('/status-inactive')
 def whenUserStatusInactive():
