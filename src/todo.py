@@ -20,18 +20,28 @@ import hashlib # Allows password Hashing #
 def loginpost():
     if request.GET.login:
         global sesskey
-        username = request.forms.get('username')
-        password = request.forms.get('password')
+        username = request.GET.login('uname')
+        password = request.GET.login('pword')
+        tablename = username
+        tablevalue = password
         conn = sql.connect('src/db/users.db')
         c = conn.cursor()
-        usernameCheck = c.execute("SELECT password FROM user_data WHERE username = (?)", (username,)).fetchone()
-        passwordCheck = c.execute("SELECT username FROM user_data WHERE password = (?)", (password,)).fetchone()
-        if username == usernameCheck and password == passwordCheck: 
+        usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
+        passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
+        if password == passwordCheck and username == usernameCheck:
+            print(username)
+            select_items = f'''SELECT * FROM [{tablename}]'''
+            c.execute(select_items)
+            print("Accessing table name {}, using password {}".format(tablename,password))
+            result = c.fetchall()
             sesskey=1
-            return template('src/html/loginSuccess.html', sesskey=sesskey)
-        elif username != usernameCheck and password != passwordCheck:
+            return template('src/html/make_table.html',diagnostic=username, rows=result, sesskey=sesskey)
+        else: #if password != passwordCheck or username != usernameCheck:
             sesskey=0
+            conn.close()
             return template('src/html/loginFailure.html', sesskey=sesskey)
+        conn.close()
+
     else:
         return template('src/html/loginPage')
 
@@ -260,7 +270,7 @@ def todo_list():
     DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    select_items = f'''SELECT id,task,status,date_due,date_created FROM [{DynamicTable}] WHERE status='0' '''
+    select_items = f'''SELECT * FROM [{DynamicTable}]'''
     c.execute(select_items)
     print("Accessing table name {}".format(DynamicTable))
     result = c.fetchall()
