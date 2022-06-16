@@ -10,6 +10,12 @@ from bottle import *
 from datetime import date
 import hashlib # Allows password Hashing #
 
+
+message1=''
+message2=''
+message3=''
+username=''
+
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
 #------------------------------------------------------------------------------------------------------------#
@@ -27,6 +33,11 @@ def login():
 @route('/loginPage', method='POST')
 def do_login():
     global username, sesskey, password
+    
+    message1=''
+    message2=''
+    message3=''
+    username=''
     sesskey = 0
     username = request.forms.get('username')
     password = request.forms.get('password')
@@ -80,10 +91,10 @@ def do_login():
 #            sesskey=0
 #            conn.close()
 #            return template('src/html/loginFailure.html', sesskey=sesskey)
-
-@route('/status-inactive')
-def whenUserStatusInactive():
-    return template('src/html/userstatusinactive.html')
+#
+#@route('/status-inactive')
+#def whenUserStatusInactive():
+#    return template('src/html/userstatusinactive.html')
 
 ###### LOGIN PAGE ######
 
@@ -123,8 +134,9 @@ def userSignUp():
         conn.close()
         redirect('/loginPage')
     else:
-        signuperror = "There was an error with creating user data {}".format(tableforuser)
-        return template('src/html/error_occured.html', errorkey=signuperror)
+
+        signuperror = "There was an error with creating user with name {}".format(username)
+        return template('src/html/index.html', message1=signuperror,message2='',message3='',username='')
 ###### SIGN UP PAGE ######
 
 
@@ -147,34 +159,25 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-    global sesskey
-    sesskey=0
-    return template('src/html/index', sesskey=sesskey)
+
+    return template('src/html/index.html',message1='',message2='',message3='',username='')
+    #if request.get_cookie("visited"):
+    #    return template('src/html/index.html', )
+    #else:
+    #    response.set_cookie("visited", "yes")
+    #    return "Hello there! Nice to meet you"
+    
 ###### INDEX ROUTE ######
 
 #------------------------------------------------------------------------------------------------------------#
-# DESIGNATION FOR INVALID ITEM FOUND WHEN MODIFYING-----------------------------------------------------------# ITEM NOT FOUND
+# DESIGNATION FOR EMAIL FORM---------------------------------------------------------------------------------# ITEM NOT FOUND
 #------------------------------------------------------------------------------------------------------------#
 
-@route('/item_not_found')
-def invalid_item_triggered():
-    return template('src/html/invalid_item.html')
-
-@route('/error_occured')
-def no_items_in_database():
-    return template('src/html/error_occured.html')
-
-@route('/maximumDataEntries')
-def maximumDataEntries():
-    return template('src/html/too_many_items.html')
 
 @route('/contact_form')
 def emailForm():
     userOutput = template('src/html/email_form.html')
     return userOutput
-
-
-
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO EDIT SELECTED ITEM-----------------------------------------------------------------# EDIT 
@@ -197,14 +200,16 @@ def edit_item(no):
         c = conn.cursor()
         c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
         conn.commit()
-        return template('src/html/itemUpdated.html', no=no)
+        itemupdated="The Selected Item No#{} has been updated".format(no)
+        return template('src/html/index.html', message1=itemupdated,message2='',message3='',username='', no=no)
     else:
         conn = sql.connect('src/db/todo.db')
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
+        item_invalid="The Selected Item No#{} does not exist".format(no)
         if not cur_data:
-            redirect('/item_not_found')
+            return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
         return template('src/html/edit_task.html', old=cur_data, no=no)
     
 ###### EDIT ITEM (INT) ######
@@ -243,10 +248,12 @@ def deleteALLitems():
         c.execute("DELETE FROM todo")
         conn.commit()
         c.close()
+
         if not result:
-            redirect('/no_items_in_database')
-           
-        return template('src/html/deleteALLitemsuccess')
+            noitemsindatabase = "There are currently no entries in the database"
+            return template('src/html/index.html',message1=noitemsindatabase,message2='',message3='',username='')
+        deleteallitemsuccess="Successfully deleted all items in database"
+        return template('src/html/index.html', message1=deleteallitemsuccess,message2='',message3='',username='')
     else:
 
         return template('src/html/deleteAllitems')
@@ -271,17 +278,20 @@ def delete(no):
             conn.commit()
             c.close()
         else:
-            return template('src/html/deleteFailure.html', no=no)
-        return template('src/html/deleteSuccess.html', no=no)
+            delete_failure="Unable to delete selected item No#{}".format(no)
+            return template('src/html/index.html', message1=delete_failure, no=no,message2='',message3='',username='')
+        delete_success="Item No#{} successfully deleted"
+        return template('src/html/index.html', message1=delete_success, no=no,message2='',message3='',username='')
 
     else:
         conn = sql.connect('src/db/todo.db')
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
+        item_invalid="The Selected Item No#{} does not exist".format(no)
         if not cur_data:
-            redirect('/item_not_found')
-        return template('src/html/delete.html', old=cur_data, no=no)
+            return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
+        return template('src/html/delete.html', old=cur_data, no=no,message2='',message3='',username='')
 ###### DELETE ITEM ######
 
 #------------------------------------------------------------------------------------------------------------#
@@ -345,8 +355,9 @@ def todo_list_all():
     result = c.fetchall()
     
     c.close()
+    noitemsindatabase = "There are currently no entries in the database"
     if not result:
-        redirect('/no_items_in_database')
+        return template('src/html/index.html', message1=noitemsindatabase,message2='',message3='',username='')
     print(result)
     output = template('src/html/ALLitems.html', rows=result)
     return output
@@ -384,9 +395,13 @@ def new_item():
             new_id = c.lastrowid
             conn.commit()
             c.close()
-            return template('src/html/itemCreated.html', rows=rows)
+            return template('src/html/index.html', rows=rows,message1='Create New Item Success',message2='',message3='',username='')
         elif rows > 50:
-            return '<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
+            toomanyitems="There are currently too many entries in the database."
+            toomanyitems2="Please delete entries to create a new entry"
+            toomanyitems3="Maximum of 50 items in a database"
+            return template('src/html/index.html', message1=toomanyitems,message2=toomanyitems2,message3=toomanyitems3,username='')
+            #'<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
     else:
         return template('src/html/new_task.html')
 ###### CREATE NEW ITEM ######
