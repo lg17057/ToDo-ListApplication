@@ -100,11 +100,11 @@ def userSignUp():
     if checkUsername != 0:
         table_exists = "SELECT username FROM user_data WHERE username = ?"
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
-           createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL)"
-           insertTable = f"INSERT INTO [{tableforuser}](task,status) VALUES ('This is your first database entry, {tableforuser}',0)"
-           time.sleep(3)
+           createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
+           insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
+           time.sleep(2)
            conn.execute(createTable)
-           time.sleep(1)
+           time.sleep(1.5)
            conn.execute(insertTable)       
         conn.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
         conn.commit()
@@ -115,7 +115,6 @@ def userSignUp():
         signuperror = "There was an error with creating user with name {}".format(username)
         return template('src/html/index.html', message1=signuperror,message2='',message3='',username='')
 ###### SIGN UP PAGE ######
-
 
 
 #------------------------------------------------------------------------------------------------------------#
