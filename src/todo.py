@@ -32,71 +32,43 @@ def login():
 
 @route('/loginPage', method='POST')
 def do_login():
-    global username, sesskey, password
-    
-    message1=''
-    message2=''
-    message3=''
-    username=''
+    response.set_cookie("loginstatus", value="false", secret='some-secret-key')
+    global username
     sesskey = 0
     username = request.forms.get('username')
     password = request.forms.get('password')
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    usernameCheck = c.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
-    passwordCheck = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
-    print(usernameCheck)
-    print(passwordCheck)
+    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+    key = cur.fetchone()
+    conn.close()
     one = 1
-    if username == usernameCheck and password == passwordCheck:
-        select_items = f'''SELECT * FROM [{username}]'''
-        c.execute(select_items)
-        print("Accessing table name {}, using password {}".format(username,password))
-        result = c.fetchall()
+    if one == 1:
+        response.set_cookie("loginstatus", value="true", secret='some-secret-key')
+        print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
-        conn.close()
-        return template('src/html/make_table.html',diagnostic=username, rows=result, sesskey=sesskey)
-    elif username != usernameCheck or password != passwordCheck:
-        sesskey=0
+        return template('src/html/loginSuccess.html',message1='',message2='',message3='',username=username, sesskey=sesskey)
+    elif one != 1:
+        username = "UserNotLoggedIn"
+        response.set_cookie("loginstatus", value="false", secret='some-secret-key')
+        response.set_cookie("username", username=username, secret='some-secret-key')
         print("Accessing table name {}, using password {}".format(username,password))
-        conn.close()
+        sesskey=0
         return template('src/html/loginFailure.html', sesskey=sesskey)
     
    
-
-####### LOGIN PAGE ######
-#@post('/loginPage', method='POST')
-#def login():
-#        global sesskey
-#        global tablename
-#        sesskey = 0
-#        tablename = 'first'
-#        tablename = request.forms.get('username').strip()
-#        tablepass = request.forms.get('password').strip()
-#        conn = sql.connect('src/db/users.db')
-#        
-#        c = conn.cursor()
-#        usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (tablepass,)).fetchone()
-#        passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (tablename,)).fetchone()
-#        if tablepass == passwordCheck and tablename == usernameCheck:
-#            print(tablename)
-#            select_items = f'''SELECT * FROM [{tablename}]'''
-#            c.execute(select_items)
-#            print("Accessing table name {}, using password {}".format(tablename,tablepass))
-#            result = c.fetchall()
-#            sesskey=1
-#            conn.close()
-#            return template('src/html/make_table.html',diagnostic=tablename, rows=result, sesskey=sesskey)
-#        else: #if password != passwordCheck or username != usernameCheck:
-#            sesskey=0
-#            conn.close()
-#            return template('src/html/loginFailure.html', sesskey=sesskey)
-#
-#@route('/status-inactive')
-#def whenUserStatusInactive():
-#    return template('src/html/userstatusinactive.html')
+def cookie_func():
+    response.set_cookie("loginstatus", value="false", secret='some-secret-key')
 
 ###### LOGIN PAGE ######
+
+#------------------------------------------------------------------------------------------------------------#
+# DESIGNATION PAGE FOR USER NOT LOGGED IN MESSAGE -----------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------#
+
+@route('/loginstatus')
+def usernotloggedin():
+    return template('src/html/logoutstatus.html')
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR SIGN UP PAGE-------------------------------------------------------------------------------# SIGN UP PAGE
@@ -159,13 +131,7 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-
     return template('src/html/index.html',message1='',message2='',message3='',username='')
-    #if request.get_cookie("visited"):
-    #    return template('src/html/index.html', )
-    #else:
-    #    response.set_cookie("visited", "yes")
-    #    return "Hello there! Nice to meet you"
     
 ###### INDEX ROUTE ######
 
@@ -312,16 +278,26 @@ def uDeleteChoice():
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
 def todo_list():
-    TableName = request.forms.get('username')
-    DynamicTable = TableName
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    select_items = f'''SELECT * FROM [{DynamicTable}]'''
-    c.execute(select_items)
-    print("Accessing table name {}".format(DynamicTable))
-    result = c.fetchall()
-    conn.close()
-    return template('src/html/make_table', diagnostic=TableName, rows=result )
+    loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
+    active_username = request.get_cookie("username", secret='some-secret-key')
+
+    print(loginstatus)
+    if loginstatus == "true":
+        print("Login status is true, continuing to todo list page")
+        select_items = f'''SELECT * FROM [{active_username}]'''
+        print(active_username)
+        c.execute(select_items)
+        print("Accessing table name {}".format(active_username))
+        result = c.fetchall()
+        conn.close()
+        return template('src/html/make_table', diagnostic=active_username, rows=result )
+    elif loginstatus == "false":
+        print("Login status is false, redirecting to login status page")
+        conn.close()
+        redirect('/loginstatus')
+
 
 
 #@route('/todo') execute("SELECT weight FROM Equipment WHERE name = :name AND price = :price",
@@ -539,5 +515,6 @@ def colourselect():
 #------------------------------------------------------------------------------------------------------------#
 # RUNS THE WEBSITE ------------------------------------------------------------------------------------------# HOST
 #------------------------------------------------------------------------------------------------------------#
-
+cookie_func()
 run(host='127.1.0.1', port=5500, reloader=True, debug=True)
+
