@@ -20,11 +20,6 @@ username=''
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
 #------------------------------------------------------------------------------------------------------------#
 
-def check_login(username, password):
-    conn = sql.connect('src/db/users.db')
-    c = conn.cursor()
-    usernameCheck = conn.execute("SELECT username FROM user_data WHERE password = ?", (password,)).fetchone()
-    passwordCheck = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)).fetchone()
 
 @route('/loginPage')
 def login():
@@ -32,7 +27,7 @@ def login():
 
 @route('/loginPage', method='POST')
 def do_login():
-    response.set_cookie("loginstatus", value="false", secret='some-secret-key')
+    response.set_cookie("loginstatus", False, secret='some-secret-key')
     global username
     sesskey = 0
     username = request.forms.get('username')
@@ -41,7 +36,7 @@ def do_login():
     cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username))
     key = cur.fetchone()
     if password == key[0]:
-        response.set_cookie("loginstatus", value="true", secret='some-secret-key')
+        response.set_cookie("loginstatus", True, secret='some-secret-key')
         response.set_cookie("user_id", username)
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
@@ -50,16 +45,13 @@ def do_login():
     elif key == "adminbypass":
         return template('src/html/logoutstatus.html', message1="Admin Bypass")
     elif password != key:
-        response.set_cookie("loginstatus", value="false", secret='some-secret-key')
-        #response.set_cookie("username", username=username, secret='some-secret-key')
+        response.set_cookie("loginstatus", False, secret='some-secret-key')
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
         conn.close()
         return template('src/html/loginFailure.html', sesskey=sesskey)
     
-   
-def cookie_func():
-    response.set_cookie("loginstatus", value="false", secret='some-secret-key')
+
 
 ###### LOGIN PAGE ######
 
@@ -131,7 +123,8 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-    return template('src/html/index.html',message1='',message2='',message3='',username='')
+    loginstatus = request.get_cookie("loginstatus")
+    return template('src/html/index.html',loginstatus=loginstatus,message2='',message3='',username='',message1='')
     
 ###### INDEX ROUTE ######
 
@@ -281,19 +274,19 @@ def todo_list():
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
-    active_username = request.get_cookie("username", username, secret='some-secret-key')
+    username = request.get_cookie("user_id")
 
     print(loginstatus)
-    if loginstatus == "true":
+    if loginstatus == True:
         print("Login status is true, continuing to todo list page")
-        select_items = f'''SELECT * FROM [{active_username}]'''
-        print(active_username)
+        select_items = f'''SELECT * FROM [{username}]'''
+        print(username)
         c.execute(select_items)
-        print("Accessing table name {}".format(active_username))
+        print("Accessing table name {}".format(username))
         result = c.fetchall()
         conn.close()
-        return template('src/html/make_table', diagnostic=active_username, rows=result )
-    elif loginstatus == "false":
+        return template('src/html/make_table', diagnostic=username, rows=result )
+    elif loginstatus == False:
         print("Login status is false, redirecting to login status page")
         conn.close()
         redirect('/loginstatus')
@@ -515,6 +508,6 @@ def colourselect():
 #------------------------------------------------------------------------------------------------------------#
 # RUNS THE WEBSITE ------------------------------------------------------------------------------------------# HOST
 #------------------------------------------------------------------------------------------------------------#
-cookie_func()
-run(host='127.1.0.1', port=5500, reloader=True, debug=True)
 
+run(host='127.1.0.1', port=5500, reloader=True, debug=True)
+response.set_cookie("loginstatus", False, secret='some-secret-key')

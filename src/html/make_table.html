@@ -80,9 +80,9 @@
 </body>
           <!-- MAIN CONTENT-->
           <div>
-            <h2>Accessing table name [{{diagnostic}}]</h2>
-            <h2>Session Key: </h2>
-            <h3>The Current Entries are as follows:</h3>
+            <h2>Accessing username [{{diagnostic}}]</h2>
+            <small>Status (1) = Closed, Status (2) = Open</small>
+            <br>
             <small>To sort table, click headers.</small>
             <table id="myTable" class="todoTable">
               <th onclick="sortbynumber()" title="Sort By Number">
@@ -91,11 +91,14 @@
               <th onclick="sortTable(0)" title="Sort Alphabetically">
                 Description
               </th>
+              <th>
+                Status
+              </th>
               <th onclick="sortTable(1)" title="Sort by Date Created">
-                Date Created:
+                Date Due:
               </th>
               <th onclick="sortTable(1)" title="Sort by Date Due">
-                Date Due:
+                Date Created:
               </th>
             %for row in rows:
               <tr>
