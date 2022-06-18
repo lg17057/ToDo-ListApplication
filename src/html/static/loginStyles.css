@@ -157,8 +157,8 @@ p {
 
 #email-input,
 #username-input,
-#password-input,
-#password-repeat-input {
+#password,
+#password-repeat {
   width: 30%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -170,8 +170,8 @@ p {
 
 #email-input:focus,
 #username-input,
-#password-input:focus,
-#password-repeat-input:focus {
+#password:focus,
+#password-repeat:focus {
   background-color: #ddd;
   outline: none;
 }

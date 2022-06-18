@@ -39,22 +39,27 @@ def do_login():
     password = request.forms.get('password')
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
-    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+    cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+    c.execute(cur)
     key = cur.fetchone()
-    conn.close()
+    print(key)
     one = 1
-    if one == 1:
+    if password == key:
         response.set_cookie("loginstatus", value="true", secret='some-secret-key')
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
-        return template('src/html/loginSuccess.html',message1='',message2='',message3='',username=username, sesskey=sesskey)
-    elif one != 1:
-        username = "UserNotLoggedIn"
+        conn.close()
+        return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
+    elif key == "adminbypass":
+        return template('src/html/logoutstatus.html', message1="Admin Bypass")
+    elif password != key:
         response.set_cookie("loginstatus", value="false", secret='some-secret-key')
-        response.set_cookie("username", username=username, secret='some-secret-key')
-        print("Accessing table name {}, using password {}".format(username,password))
+        #response.set_cookie("username", username=username, secret='some-secret-key')
+        print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
+        conn.close()
         return template('src/html/loginFailure.html', sesskey=sesskey)
+    
     
    
 def cookie_func():
@@ -281,7 +286,7 @@ def todo_list():
     conn = sql.connect('src/db/users.db')
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
-    active_username = request.get_cookie("username", secret='some-secret-key')
+    active_username = request.get_cookie("username", username, secret='some-secret-key')
 
     print(loginstatus)
     if loginstatus == "true":
