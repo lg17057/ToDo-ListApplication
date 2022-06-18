@@ -38,14 +38,11 @@ def do_login():
     username = request.forms.get('username')
     password = request.forms.get('password')
     conn = sql.connect('src/db/users.db')
-    c = conn.cursor()
-    cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,))
-    c.execute(cur)
+    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username))
     key = cur.fetchone()
-    print(key)
-    one = 1
-    if password == key:
+    if password == key[0]:
         response.set_cookie("loginstatus", value="true", secret='some-secret-key')
+        response.set_cookie("user_id", username)
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
         conn.close()
@@ -59,7 +56,6 @@ def do_login():
         sesskey=0
         conn.close()
         return template('src/html/loginFailure.html', sesskey=sesskey)
-    
     
    
 def cookie_func():
