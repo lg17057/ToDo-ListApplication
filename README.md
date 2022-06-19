@@ -7,14 +7,14 @@ This ToDo List application will allow the user to do the following:
 
 ### Base(Required) Features;
 
--User Create and Login to an account
--User log-out of account
--View User Specific data entries
--Create User Specific data entries (inclduing entry number limits)
--Edit User Specific data entries
--Delete User Specific data entries (includes delete all items
--Error pages, including 404, 403
--Access a help page
+* User Create and Login to an account
+* User log-out of account
+* View User Specific data entries
+* Create User Specific data entries (inclduing entry number limits)
+* Edit User Specific data entries
+* Delete User Specific data entries (includes delete all items
+* Error pages, including 404, 403
+* Access a help page
 
 
 ### Additional Features;
