@@ -29,7 +29,6 @@ def login():
 
 @route('/loginPage', method='POST')
 def do_login():
-
     response.set_cookie("loginstatus", value="False", secret='some-secret-key')
     global username
     sesskey = 0
@@ -38,6 +37,7 @@ def do_login():
     conn = sql.connect('src/db/users.db')
     cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,))
     key = cur.fetchone()
+    print(key)
     if password == key[0]:
         response.set_cookie("loginstatus", value="True", secret='some-secret-key')
         response.set_cookie("user_id", username)
@@ -45,7 +45,7 @@ def do_login():
         sesskey=1
         conn.close()
         return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
-    elif password != key:
+    elif password != key[0]:
         response.set_cookie("loginstatus", value="False", secret='some-secret-key')
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
@@ -90,7 +90,7 @@ def userSignUp():
         if not conn.execute(table_exists, (tableforuser,)).fetchone():
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
-           time.sleep(2)
+           time.sleep(1)
            conn.execute(createTable)
            time.sleep(1.5)
            conn.execute(insertTable)       
