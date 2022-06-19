@@ -23,29 +23,30 @@ username=''
 
 @route('/loginPage')
 def login():
+    response.set_cookie("loginstatus", value="False", secret='some-secret-key')
+    print("Login status set to false")
     return template('src/html/loginPage.html')
 
 @route('/loginPage', method='POST')
 def do_login():
-    response.set_cookie("loginstatus", False, secret='some-secret-key')
+
+    response.set_cookie("loginstatus", value="False", secret='some-secret-key')
     global username
     sesskey = 0
     username = request.forms.get('username')
-    password = request.forms.get('password')
+    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest()
     conn = sql.connect('src/db/users.db')
-    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username))
+    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,))
     key = cur.fetchone()
     if password == key[0]:
-        response.set_cookie("loginstatus", True, secret='some-secret-key')
+        response.set_cookie("loginstatus", value="True", secret='some-secret-key')
         response.set_cookie("user_id", username)
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
         conn.close()
         return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
-    elif key == "adminbypass":
-        return template('src/html/logoutstatus.html', message1="Admin Bypass")
     elif password != key:
-        response.set_cookie("loginstatus", False, secret='some-secret-key')
+        response.set_cookie("loginstatus", value="False", secret='some-secret-key')
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
         conn.close()
@@ -79,8 +80,7 @@ def userSignUp():
     username = request.forms.get('username')
     global tableforuser
     tableforuser = username
-    
-    password = request.forms.get('password')
+    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest()
     cur = c.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
     checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
     now = datetime.now()
@@ -277,7 +277,7 @@ def todo_list():
     username = request.get_cookie("user_id")
 
     print(loginstatus)
-    if loginstatus == True:
+    if loginstatus == "True":
         print("Login status is true, continuing to todo list page")
         select_items = f'''SELECT * FROM [{username}]'''
         print(username)
@@ -286,7 +286,7 @@ def todo_list():
         result = c.fetchall()
         conn.close()
         return template('src/html/make_table', diagnostic=username, rows=result )
-    elif loginstatus == False:
+    elif loginstatus == "False":
         print("Login status is false, redirecting to login status page")
         conn.close()
         redirect('/loginstatus')
@@ -510,4 +510,4 @@ def colourselect():
 #------------------------------------------------------------------------------------------------------------#
 
 run(host='127.1.0.1', port=5500, reloader=True, debug=True)
-response.set_cookie("loginstatus", False, secret='some-secret-key')
+response.set_cookie("loginstatus", value="False", secret='some-secret-key')
