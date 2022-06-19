@@ -31,7 +31,7 @@ This ToDo List application will allow the user to do the following:
 
 Using Python 3.10.4 as a framework for the website;
 
-Bottle as a WSGI framework.
-Hashlib as a password security system.
-Sqlite3 as a database management system
+* Bottle as a WSGI framework.
+* Hashlib as a password security system.
+* Sqlite3 as a database management system
 
