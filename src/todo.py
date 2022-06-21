@@ -3,11 +3,11 @@
 #------------------------------------------------------------------------------------------------------------#
 from select import select
 import re
-import sqlite3 as sql
-from sqlite3 import *
-from bottle import route, run, debug, template, request, static_file, error, view, default_app, abort
+import sqlite3 as sql #connection between bottle/python and sqlite
+from sqlite3 import *  #allows selecting from sqlite
+from bottle import route, run, debug, template, request, static_file, error, view, default_app, abort #allows running of bottle website and its features
 from bottle import *
-from datetime import date
+from datetime import date #allows data_created data 
 import hashlib # Allows password Hashing #
 
 
@@ -23,33 +23,32 @@ username=''
 
 @route('/loginPage')
 def login():
-    response.set_cookie("loginstatus", value="False", secret='some-secret-key')
-    print("Login status set to false")
     return template('src/html/loginPage.html')
 
 @route('/loginPage', method='POST')
 def do_login():
-    response.set_cookie("loginstatus", value="False", secret='some-secret-key')
     global username
     sesskey = 0
-    username = request.forms.get('username')
-    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest()
-    conn = sql.connect('src/db/users.db')
-    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,))
-    key = cur.fetchone()
+    username = request.forms.get('username') #accesses username entered on login page
+    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #hashed password
+    conn = sql.connect('src/db/users.db')#connects database
+    cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
+    key = cur.fetchone() #fetches one value from table
     print(key)
-    if password == key[0]:
+    if password == key[0]: #checks whether user inputted password is equal to existing password
         response.set_cookie("loginstatus", value="True")
         response.set_cookie("user_id", username)
+        #login status  set to True, username set to user entered data (if pasword check successful)
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
         conn.close()
         return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
-    elif password != key[0]:
+    elif password != key[0]: #if user input password is not equal to existing password
         response.set_cookie("loginstatus", value="False", secret='some-secret-key')
+        #login value/status set to galse
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
-        conn.close()
+        conn.close() #closes connection to sqlite3
         return template('src/html/loginFailure.html', sesskey=sesskey)
     
 
@@ -62,6 +61,7 @@ def do_login():
 
 @route('/loginstatus')
 def loginstatus():
+    #page for when user is not logged in
     return template('src/html/logoutstatus.html')
 
 #------------------------------------------------------------------------------------------------------------#
@@ -71,9 +71,12 @@ def loginstatus():
 @route('/logout', method=["GET", "POST"])
 def logout():
     response.set_cookie("loginstatus", value="False")
+    #sets loginstatus to false
     response.set_cookie("user_id", value='')
+    #sets user_id/username to blank str
     print("USER LOGGED OUT")
     abort(401, "You're no longer logged in")
+    #sends user to a 401 page with specific message
 
 
 #------------------------------------------------------------------------------------------------------------#
@@ -87,31 +90,36 @@ def signUp():
 
 @post('/signUp')
 def userSignUp():
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
-    username = request.forms.get('username')
+    username = request.forms.get('username') 
     global tableforuser
     tableforuser = username
-    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #password hasing for security
+    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #password hasing for security (using hashlib)
     cur = c.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
     checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
     now = datetime.now()
     date_created = now.strftime("%d/%m/%Y %H:%M")
+    #sets date variable
     if checkUsername != 0:
+        #checks whether username is null/eqault to 0 (exists)
+        #selects username from user_data table to see if user exists
         table_exists = "SELECT username FROM user_data WHERE username = ?"
-        if not conn.execute(table_exists, (tableforuser,)).fetchone():
+        if not conn.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
            time.sleep(1)
+           #fixes issues with database being locked
            conn.execute(createTable)
            time.sleep(1.5)
            conn.execute(insertTable)       
         conn.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
+        #commts username and hashed password data to user_data table
         conn.commit()
         conn.close()
+        #commits data to file and closes sqlite connection
         redirect('/loginPage')
-    else:
-
+    else: #if error occurs
         signuperror = "There was an error with creating user with name {}".format(username)
         return template('src/html/index.html', message1=signuperror,message2='',message3='',username='')
 ###### SIGN UP PAGE ######
@@ -124,6 +132,7 @@ def userSignUp():
 ###### IMPORT CSS / JAVASCRIPT #######
 @route('/static/<filepath:path>')
 def load_static(filepath):
+    #allows program to access static files such as Cascading Stylsheets, Javascript Files and images, etc
     return static_file(filepath, root='C:/Users/liamg/Desktop/Actual Code/src/html/static')
 
 ###### IMPORT CSS / JAVASCRIPT #######
@@ -135,9 +144,11 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-    loginstatus = request.get_cookie("loginstatus")
-    if loginstatus == "True":
+    loginstatus = request.get_cookie("loginstatus") #accesses cookie "loginstatus"
+    if loginstatus == "True": #cookie based routing
         loginTrue = 'True'
+        #^sets loginstatus message to true
+        #^^fixes issue with login status being long string of letters/numbers
         return template('src/html/index.html',loginstatus=loginTrue,message2='',message3='',username='',message1='')
     return template('src/html/index.html',loginstatus='No User Logged In',message2='',message3='',username='',message1='')
     
@@ -147,7 +158,6 @@ def home_page():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR EMAIL FORM---------------------------------------------------------------------------------# ITEM NOT FOUND
 #------------------------------------------------------------------------------------------------------------#
-
 
 @route('/contact_form')
 def emailForm():
@@ -171,14 +181,14 @@ def edit_item(no):
         else:
             status = 0
 
-        conn = sql.connect('src/db/users.db')
+        conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
         c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
         conn.commit()
         itemupdated="The Selected Item No#{} has been updated".format(no)
         return template('src/html/index.html', message1=itemupdated,message2='',message3='',username='', no=no)
     else:
-        conn = sql.connect('src/db/users.db')
+        conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
@@ -216,15 +226,16 @@ def delete_query():
 ##### DELETE ALL ITEMS ####
 @route('/deleteAllitems')
 def deleteALLitems():
-    if request.GET.save:
-        conn = sql.connect('src/db/users.db')
+    if request.GET.save: #> user confirms delete all items
+        conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
-        result = c.fetchall()
-        c.execute("DELETE FROM todo")
+        result = c.fetchall() #fetches all items
+        deleteall = f'''DELETE FROM [{username}]''' #deletes all items in table
+        c.execute(deleteall) #executes 'deleteall'
         conn.commit()
-        c.close()
+        c.close() #commits to database and closes
 
-        if not result:
+        if not result: #checks whether there are items in table
             noitemsindatabase = "There are currently no entries in the database"
             return template('src/html/index.html',message1=noitemsindatabase,message2='',message3='',username='')
         deleteallitemsuccess="Successfully deleted all items in database"
@@ -247,7 +258,7 @@ def delete(no):
         status = request.GET.status.strip()
 
         if status == 'Confirm Delete':
-            conn = sql.connect('src/db/users.db')
+            conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
             c.execute("Delete FROM todo where id = ?", (no,))
             conn.commit()
@@ -259,9 +270,9 @@ def delete(no):
         return template('src/html/index.html', message1=delete_success, no=no,message2='',message3='',username='')
 
     else:
-        conn = sql.connect('src/db/users.db')
+        conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
-        c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
+        c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,)) 
         cur_data = c.fetchone()
         item_invalid="The Selected Item No#{} does not exist".format(no)
         if not cur_data:
@@ -287,19 +298,21 @@ def uDeleteChoice():
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
 def todo_list():
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
-    username = request.get_cookie("user_id")
 
     print(loginstatus)
-    if loginstatus == "True":
+    if loginstatus == "True": #checks whether a user is logged in
+        username = request.get_cookie("user_id") 
+        #gathers cookie "username" for current userame
+        #^allows program to access user-username specific content
         print("Login status is true, continuing to todo list page")
-        select_items = f'''SELECT * FROM [{username}]'''
+        select_items = f'''SELECT * FROM [{username}]''' #selects user specific content from table
         print(username)
         c.execute(select_items)
         print("Accessing table name {}".format(username))
-        result = c.fetchall()
+        result = c.fetchall() #fetches all items in database
         conn.close()
         return template('src/html/make_table', diagnostic=username, rows=result )
     elif loginstatus == "False":
@@ -316,7 +329,7 @@ def todo_list():
 @route('/allItems')
 def todo_list_all():
 
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
     c.execute("SELECT id, task, status, date_created, date_due FROM todo LIMIT 50") 
     result = c.fetchall()
@@ -345,23 +358,27 @@ def todo_list_query():
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("user_id")
+    loginstatus = request.get_cookie("loginstatus")# requests login status (true or false)
+    username = request.get_cookie("user_id")#requests username 
     if loginstatus == "True":
-        if request.GET.save:
-            conn = sql.connect('src/db/users.db')
+        if request.GET.save: #if user clicks 'save' button on new task page
+            conn = sql.connect('src/db/users.db')#connects database#connects database
             c = conn.cursor()
             #count = f'''SELECT COUNT (*) from {[username]}'''
             #c.execute(count)
             #cur_result = c.fetchone()
             #rows = cur_result[0]
+            ##if rows are less than maximum, continue
         #if rows < 50:
             new = request.GET.task.strip()
             date_due = request.GET.date_due.strip()
+            #
             now = datetime.now()
             date_created = now.strftime("%d/%m/%Y %H:%M")
+            #variable designated for date created, in years, months, days, hrs and minutes
             time.sleep(1)
-            insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
+            insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
+            #chooses username specific table within database, based on cookie "username"
             time.sleep(1)
             c.execute(insert_data, (new, 1, date_due, date_created))
             new_id = c.lastrowid
@@ -369,16 +386,17 @@ def new_item():
             conn.commit()
             conn.close()
             return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
+            ##if rows are over maxmimum, output error message
         #elif rows > 50:
             toomanyitems="There are currently too many entries in the database."
-            toomanyitems2="Please delete entries to create a new entry"
+            toomanyitems2="Please delete entries to create a new entry" #dynamic messages for index page
             toomanyitems3="Maximum of 50 items in a database"
             return template('src/html/index.html', message1=toomanyitems,message2=toomanyitems2,message3=toomanyitems3,username='')
         else:
             return template('src/html/new_task.html')
     elif loginstatus == "False":
         print("Login status is false, redirecting to login status page")
-        conn.close()
+        conn.close() #closes database
         redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
@@ -423,7 +441,7 @@ def help():
 @route('/item<item:re:[0-9]+>')
 def show_item(item):
 
-        conn = sql.connect('src/db/users.db')
+        conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (item,))
         result = c.fetchall()
@@ -443,7 +461,7 @@ def show_item(item):
 @route('/json<json:re:[0-9]+>')
 def show_json(json):
 
-    conn = sql.connect('src/db/users.db')
+    conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
     c.execute("SELECT task FROM todo WHERE id LIKE ?", (json,))
     result = c.fetchall()
