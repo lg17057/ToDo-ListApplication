@@ -363,11 +363,11 @@ def new_item():
             time.sleep(1)
             insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
             time.sleep(1)
-            conn.execute(insert_data, (new, 1, date_due, date_created))
+            c.execute(insert_data, (new, 1, date_due, date_created))
             new_id = c.lastrowid
             time.sleep(1)
-            c.commit()
-            c.close()
+            conn.commit()
+            conn.close()
             return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
         #elif rows > 50:
             toomanyitems="There are currently too many entries in the database."
@@ -378,7 +378,7 @@ def new_item():
             return template('src/html/new_task.html')
     elif loginstatus == "False":
         print("Login status is false, redirecting to login status page")
-        c.close()
+        conn.close()
         redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
