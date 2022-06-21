@@ -171,14 +171,14 @@ def edit_item(no):
         else:
             status = 0
 
-        conn = sql.connect('src/db/todo.db')
+        conn = sql.connect('src/db/users.db')
         c = conn.cursor()
         c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
         conn.commit()
         itemupdated="The Selected Item No#{} has been updated".format(no)
         return template('src/html/index.html', message1=itemupdated,message2='',message3='',username='', no=no)
     else:
-        conn = sql.connect('src/db/todo.db')
+        conn = sql.connect('src/db/users.db')
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
@@ -217,7 +217,7 @@ def delete_query():
 @route('/deleteAllitems')
 def deleteALLitems():
     if request.GET.save:
-        conn = sql.connect('src/db/todo.db')
+        conn = sql.connect('src/db/users.db')
         c = conn.cursor()
         result = c.fetchall()
         c.execute("DELETE FROM todo")
@@ -247,7 +247,7 @@ def delete(no):
         status = request.GET.status.strip()
 
         if status == 'Confirm Delete':
-            conn = sql.connect('src/db/todo.db')
+            conn = sql.connect('src/db/users.db')
             c = conn.cursor()
             c.execute("Delete FROM todo where id = ?", (no,))
             conn.commit()
@@ -259,7 +259,7 @@ def delete(no):
         return template('src/html/index.html', message1=delete_success, no=no,message2='',message3='',username='')
 
     else:
-        conn = sql.connect('src/db/todo.db')
+        conn = sql.connect('src/db/users.db')
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
         cur_data = c.fetchone()
@@ -316,7 +316,7 @@ def todo_list():
 @route('/allItems')
 def todo_list_all():
 
-    conn = sql.connect('src/db/todo.db')
+    conn = sql.connect('src/db/users.db')
     c = conn.cursor()
     c.execute("SELECT id, task, status, date_created, date_due FROM todo LIMIT 50") 
     result = c.fetchall()
@@ -423,7 +423,7 @@ def help():
 @route('/item<item:re:[0-9]+>')
 def show_item(item):
 
-        conn = sql.connect('src/db/todo.db')
+        conn = sql.connect('src/db/users.db')
         c = conn.cursor()
         c.execute("SELECT task FROM todo WHERE id LIKE ?", (item,))
         result = c.fetchall()
@@ -443,7 +443,7 @@ def show_item(item):
 @route('/json<json:re:[0-9]+>')
 def show_json(json):
 
-    conn = sql.connect('src/db/todo.db')
+    conn = sql.connect('src/db/users.db')
     c = conn.cursor()
     c.execute("SELECT task FROM todo WHERE id LIKE ?", (json,))
     result = c.fetchall()
