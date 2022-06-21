@@ -1,0 +1,10 @@
+loginstatus = request.get_cookie("loginstatus")
+username = request.get_cookie("user_id") 
+print(loginstatus)
+
+if loginstatus == "True":
+    print("Login status is true, continuing to todo list page")
+
+elif loginstatus == "False":
+    print("Login status is false, redirecting to login status page")
+    redirect('/loginstatus')

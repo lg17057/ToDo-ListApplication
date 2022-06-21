@@ -308,6 +308,9 @@ def uDeleteChoice():
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
 def todo_list():
+
+
+    
     conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus")
