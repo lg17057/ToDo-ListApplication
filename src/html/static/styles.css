@@ -27,6 +27,19 @@ body {
     margin: auto;
 }
 
+.logoutBtn{
+  font-family: open-sans, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+  padding: 9px 18px;
+  border: 1px solid #0800ff;
+  text-decoration: none;
+  font-size: 16px;
+  color: #0800ff;
+  cursor: pointer;
+  background-color: #FFFFFF;
+}
+
 
 /* SIDENAV STUFFSIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF */ 
     .submit {

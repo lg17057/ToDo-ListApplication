@@ -5,7 +5,7 @@ from select import select
 import re
 import sqlite3 as sql
 from sqlite3 import *
-from bottle import route, run, debug, template, request, static_file, error, view, default_app
+from bottle import route, run, debug, template, request, static_file, error, view, default_app, abort
 from bottle import *
 from datetime import date
 import hashlib # Allows password Hashing #
@@ -64,6 +64,21 @@ def do_login():
 def usernotloggedin():
     return template('src/html/logoutstatus.html')
 
+@route('/logout', method=["GET", "POST"])
+def logout():
+    response.set_cookie("loginstatus", value="False")
+    response.set_cookie("user_id", value='')
+    print("USER LOGGED OUT")
+    abort(401, "You're no longer logged in")
+
+#@post('/logout', method="post")
+#def triggerlogout():
+#    if request.forms.logout():
+#        response.set_cookie("loginstatus", value="False", secret='some-secret-key')
+#        response.set_cookie("user_id", username="UserNotLoggedIn", secret='some-secret-key')
+#        print("USER LOGGED OUT")
+#        return template('src/html/logoutSuccess.html')
+    
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR SIGN UP PAGE-------------------------------------------------------------------------------# SIGN UP PAGE
 #------------------------------------------------------------------------------------------------------------#
@@ -352,7 +367,6 @@ def new_item():
     if loginstatus == "True":
         if request.GET.save:
             conn = sql.connect('src/db/users.db')
-            c = conn.cursor()
             #count = f'''SELECT COUNT (*) from {[username]}'''
             #c.execute(count)
             #cur_result = c.fetchone()
@@ -362,9 +376,12 @@ def new_item():
             date_due = request.GET.date_due.strip()
             now = datetime.now()
             date_created = now.strftime("%d/%m/%Y %H:%M")
+            time.sleep(1)
             insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
+            time.sleep(1)
             conn.execute(insert_data, (new, 1, date_due, date_created))
-            new_id = c.lastrowid
+            new_id = username.lastrowid
+            time.sleep(1)
             conn.commit()
             conn.close()
             return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
@@ -518,3 +535,4 @@ def colourselect():
 
 run(host='127.1.0.1', port=5500, reloader=True, debug=True)
 response.set_cookie("loginstatus", value="False", secret='some-secret-key')
+response.set_cookie("user_id", username="UserNotLoggedIn", secret='some-secret-key')

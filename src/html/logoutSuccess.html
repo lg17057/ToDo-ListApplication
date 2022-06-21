@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <title>Login Page</title>
+    <title>To-Do List</title>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- JAVA SCRIPT-->
@@ -8,7 +8,7 @@
         <script src="static/success.js"></script>
         <script src="static/UserSelect.js"></script>
         <!-- CSS / FONT-->
-        <link rel="stylesheet" type="text/css" href="static/loginStyles.css">
+        <link rel="stylesheet" type="text/css" href="static/snackbar.css">
         <link rel="stylesheet" type="text/css" href="static/styles.css">
         <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,13 +16,11 @@
         <link rel="icon" type="image.png" href="static/favicon-16x16.png">
     </head>
     <!-- End of Header -->
-    <script>
-
-    </script>
     <body>
         <div>
             <!-- User Login Buttons-->
             <div id="userLogin/signUp">
+              
                 <!--
                 <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
                 -->
@@ -82,62 +80,17 @@
             </div>
             </div>
     </body>
-    <style>
-        
-#email-input,
-#username-input,
-#password-input,
-#password-repeat {
-  width: 30%;
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  display: block;
-  margin: 0 auto;
-  border: none;
-  background: #f1f1f1;
-}
+ <!--- Main Content-->
 
-#email-input:focus,
-#username-input,
-#password-input:focus,
-#password-repeat:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-.logoutBtn {
-  background-color: #042eaa;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.9;
-  width: 15%;
-  display: inline-block;
-}
-    </style>
-
-
-<div id="loginDiv" style="text-align:center">
-    <form action="/loginPage" method="post">
-        <div class="container">
-        <h1 style="text-align:center;"> Welcome to the Log In page </h1>
-        <h2 style="text-align:center;">Enter Credentials: </h2>
-        <hr>
-         Username: <input  type="text" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
-         Password: <input type="password" placeholder="Password" spellcheck="false" name="password"  title="Enter your password here" id="password-input" required/>
-         <hr>
-         
-         <input name="login" value="Login" type="submit" class="loginBtn"/><input value="Sign Up" onclick="window.location.href='signUp';" type="button" class="signupBtn" name="signUp"/>
-    </form>
-    <br>
-    <form action="/logout" method="get">
-        <input type="submit" value="Logout" class="logoutBtn" name="logout">
-    </form>
+<div>
+    <!--   To Do List Header    -->
+<div class="main" id="userWelcome" >
+    <h1>Successfully logged out.</h1>
 </div>
+<br>
+<br>
+<br>
 
 
-
-
-          <!-- MAIN CONTENT-->       
+<!-- Main Content-->
 </html>
