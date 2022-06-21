@@ -347,32 +347,39 @@ def todo_list_query():
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
-    if request.GET.save:
-        conn = sql.connect('src/db/todo.db')
-        c = conn.cursor()
-        c.execute('SELECT COUNT (*) from todo')
-        cur_result = c.fetchone()
-        rows = cur_result[0]
-        if rows < 50:
+    loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
+    username = request.get_cookie("user_id")
+    if loginstatus == "True":
+        if request.GET.save:
+            conn = sql.connect('src/db/users.db')
+            c = conn.cursor()
+            #count = f'''SELECT COUNT (*) from {[username]}'''
+            #c.execute(count)
+            #cur_result = c.fetchone()
+            #rows = cur_result[0]
+        #if rows < 50:
             new = request.GET.task.strip()
             date_due = request.GET.date_due.strip()
-            conn = sql.connect('src/db/todo.db')
-            c = conn.cursor()
             now = datetime.now()
             date_created = now.strftime("%d/%m/%Y %H:%M")
-            c.execute("INSERT INTO todo (task,status,date_due,date_created) VALUES (?,?,?,?)", (new, 1, date_due, date_created))
+            insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
+            conn.execute(insert_data, (new, 1, date_due, date_created))
             new_id = c.lastrowid
             conn.commit()
-            c.close()
-            return template('src/html/index.html', rows=rows,message1='Create New Item Success',message2='',message3='',username='')
-        elif rows > 50:
+            conn.close()
+            return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
+        #elif rows > 50:
             toomanyitems="There are currently too many entries in the database."
             toomanyitems2="Please delete entries to create a new entry"
             toomanyitems3="Maximum of 50 items in a database"
             return template('src/html/index.html', message1=toomanyitems,message2=toomanyitems2,message3=toomanyitems3,username='')
             #'<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
-    else:
-        return template('src/html/new_task.html')
+        else:
+            return template('src/html/new_task.html')
+    elif loginstatus == "False":
+        print("Login status is false, redirecting to login status page")
+        conn.close()
+        redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
 #------------------------------------------------------------------------------------------------------------#
