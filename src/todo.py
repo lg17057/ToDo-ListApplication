@@ -43,7 +43,8 @@ def do_login():
         sesskey=1
         conn.close()
         return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
-    elif password != key[0]: #if user input password is not equal to existing password
+    else:
+    #elif password != key[0]: #if user input password is not equal to existing password
         response.set_cookie("loginstatus", value="False")
         #login value/status set to galse
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
