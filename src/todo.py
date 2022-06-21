@@ -201,10 +201,11 @@ def edit_item(no):
             cur_data = c.fetchone()
             item_invalid="The Selected Item No#{} does not exist".format(no)
             if not cur_data:
-                return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
+                return template('src/html/index.html', loginstatus=loginstatus, message1=item_invalid,message2='',message3='',username='')
         return template('src/html/edit_task.html', old=cur_data, no=no)
-    elif loginstatus == "False":
-        pass
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
     
     
 ###### EDIT ITEM (INT) ######
@@ -216,8 +217,19 @@ def edit_item(no):
 ####### PRELIMINARY EDIT ######
 @route('/edit/editSelect')
 def uEditChoice():
-   output = template('src/html/editSelect.html')
-   return output
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+    print(loginstatus)
+
+    if loginstatus == "True":
+        print("Login status is true, continuing to edit select page")
+        output = template('src/html/editSelect.html')
+        return output
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+  
 ####### PRELIMINARY EDIT ######
 
 #------------------------------------------------------------------------------------------------------------#
@@ -226,8 +238,17 @@ def uEditChoice():
 
 @route('/deleteQ')
 def delete_query():
-    output = template('src/html/deleteQ.html')
-    return output
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+    print(loginstatus)
+    if loginstatus == "True":
+        print("Login status is true, continuing to delete q page")
+        output = template('src/html/deleteQ.html')
+        return output
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+        
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION OR USER TO DELETE ALL ITEMS-------------------------------------------------------------------# DELETE ALL
@@ -236,23 +257,32 @@ def delete_query():
 ##### DELETE ALL ITEMS ####
 @route('/deleteAllitems')
 def deleteALLitems():
-    if request.GET.save: #> user confirms delete all items
-        conn = sql.connect('src/db/users.db')#connects database
-        c = conn.cursor()
-        result = c.fetchall() #fetches all items
-        deleteall = f'''DELETE FROM [{username}]''' #deletes all items in table
-        c.execute(deleteall) #executes 'deleteall'
-        conn.commit()
-        c.close() #commits to database and closes
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
 
-        if not result: #checks whether there are items in table
-            noitemsindatabase = "There are currently no entries in the database"
-            return template('src/html/index.html',message1=noitemsindatabase,message2='',message3='',username='')
-        deleteallitemsuccess="Successfully deleted all items in database"
-        return template('src/html/index.html', message1=deleteallitemsuccess,message2='',message3='',username='')
-    else:
+    if loginstatus == "True":
+        print("Login status is true, continuing to todo list page")
+        if request.GET.save: #> user confirms delete all items
+            conn = sql.connect('src/db/users.db')#connects database
+            c = conn.cursor()
+            result = c.fetchall() #fetches all items
+            deleteall = f'''DELETE FROM [{username}]''' #deletes all items in table
+            c.execute(deleteall) #executes 'deleteall'
+            conn.commit()
+            c.close() #commits to database and closes
 
-        return template('src/html/deleteAllitems')
+            if not result: #checks whether there are items in table
+                noitemsindatabase = "There are currently no entries in the database"
+                return template('src/html/index.html', loginstatus=loginstatus,message1=noitemsindatabase,message2='',message3='',username='')
+            deleteallitemsuccess="Successfully deleted all items in database"
+            return template('src/html/index.html', loginstatus=loginstatus, message1=deleteallitemsuccess,message2='',message3='',username='')
+        else:
+            return template('src/html/deleteAllitems')
+    elif loginstatus == "False":
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+    
 
 ##### DELETE ALL ITEMS ####
 
@@ -263,31 +293,42 @@ def deleteALLitems():
 ###### DELETE ITEM ######
 @route('/delete/<no:int>')
 def delete(no):
-    if request.GET.save:
-        edit = request.GET.task.strip()
-        status = request.GET.status.strip()
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
 
-        if status == 'Confirm Delete':
+    if loginstatus == "True":
+        print("Login status is true, continuing to todo list page")
+        if request.GET.save:
+            status = request.GET.status.strip()
+
+            if status == 'Confirm Delete':
+                conn = sql.connect('src/db/users.db')#connects database
+                c = conn.cursor()
+                delete = f'''Delete FROM [{username}] where id = ?'''
+                c.execute(delete, (no,))
+                conn.commit()
+                c.close()
+            else:
+                delete_failure="Unable to delete selected item No#{}".format(no)
+                return template('src/html/index.html', loginstatus=loginstatus, message1=delete_failure, no=no,message2='',message3='',username='')
+            delete_success="Item No#{} successfully deleted"
+            return template('src/html/index.html', loginstatus=loginstatus, message1=delete_success, no=no,message2='',message3='',username='')
+
+        else:
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
-            c.execute("Delete FROM todo where id = ?", (no,))
-            conn.commit()
-            c.close()
-        else:
-            delete_failure="Unable to delete selected item No#{}".format(no)
-            return template('src/html/index.html', message1=delete_failure, no=no,message2='',message3='',username='')
-        delete_success="Item No#{} successfully deleted"
-        return template('src/html/index.html', message1=delete_success, no=no,message2='',message3='',username='')
-
+            select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+            c.execute(select, (no,)) 
+            cur_data = c.fetchone()
+            item_invalid="The Selected Item No#{} does not exist".format(no)
+            if not cur_data:
+                return template('src/html/index.html', loginstatus=loginstatus, message1=item_invalid,message2='',message3='',username='')
+            return template('src/html/delete.html', old=cur_data, no=no,message2='',message3='',username='')
     else:
-        conn = sql.connect('src/db/users.db')#connects database
-        c = conn.cursor()
-        c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,)) 
-        cur_data = c.fetchone()
-        item_invalid="The Selected Item No#{} does not exist".format(no)
-        if not cur_data:
-            return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
-        return template('src/html/delete.html', old=cur_data, no=no,message2='',message3='',username='')
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+    
 ###### DELETE ITEM ######
 
 #------------------------------------------------------------------------------------------------------------#
@@ -297,8 +338,19 @@ def delete(no):
 ####### PRELIMINARY Delete ######
 @route('/delete/deleteSelect')
 def uDeleteChoice():
-    output = template('src/html/deleteSelect.html')
-    return output
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+    print(loginstatus)
+
+    if loginstatus == "True":
+        print("Login status is true, continuing to todo list page")
+        output = template('src/html/deleteSelect.html')
+        return output
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+        
 ####### PRELIMINARY Delete ######
 
 #------------------------------------------------------------------------------------------------------------#
@@ -309,8 +361,6 @@ def uDeleteChoice():
 @route('/todo')
 def todo_list():
 
-
-    
     conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus")
@@ -328,7 +378,7 @@ def todo_list():
         result = c.fetchall() #fetches all items in database
         conn.close()
         return template('src/html/make_table', diagnostic=username, rows=result )
-    elif loginstatus == "False":
+    else:
         print("Login status is false, redirecting to login status page")
         conn.close()
         redirect('/loginstatus')
@@ -350,7 +400,7 @@ def todo_list_all():
     c.close()
     noitemsindatabase = "There are currently no entries in the database"
     if not result:
-        return template('src/html/index.html', message1=noitemsindatabase,message2='',message3='',username='')
+        return template('src/html/index.html', loginstatus=loginstatus, message1=noitemsindatabase,message2='',message3='',username='')
     print(result)
     output = template('src/html/ALLitems.html', rows=result)
     return output
@@ -361,8 +411,18 @@ def todo_list_all():
 
 @route('/userSelectTodo')
 def todo_list_query():
-    output = template('src/html/todoQ.html')
-    return output
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+
+    if loginstatus == "True":
+        print("Login status is true, continuing to user select page page")
+        output = template('src/html/todoQ.html')
+        return output
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+    
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO CREATE NEW todo ITEM---------------------------------------------------------------# CREATE 
@@ -413,7 +473,18 @@ def new_item():
 ##### MAKE ANOTHER ITEM? #####
 @route('/anotheritem')
 def makeAnother():
-    return template('src/html/anotheritem.html')
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+    print(loginstatus)
+    
+    if loginstatus == "True":
+        print("Login status is true, continuing to make another item page")
+        return template('src/html/anotheritem.html')
+    else:
+        print("Login status is false, redirecting to login status page")
+        redirect('/loginstatus')
+
+   
 #### MAKE ANOTHER ITEM? #####
 
 #------------------------------------------------------------------------------------------------------------#
@@ -449,7 +520,8 @@ def show_item(item):
 
         conn = sql.connect('src/db/users.db')#connects database
         c = conn.cursor()
-        c.execute("SELECT task FROM todo WHERE id LIKE ?", (item,))
+        select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+        c.execute(select, (item,))
         result = c.fetchall()
         c.close()
 
@@ -469,7 +541,8 @@ def show_json(json):
 
     conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
-    c.execute("SELECT task FROM todo WHERE id LIKE ?", (json,))
+    select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+    c.execute(select, (json,))
     result = c.fetchall()
     c.close()
 
