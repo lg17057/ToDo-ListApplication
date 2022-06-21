@@ -44,10 +44,11 @@ def do_login():
         conn.close()
         return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey)
     elif password != key[0]: #if user input password is not equal to existing password
-        response.set_cookie("loginstatus", value="False", secret='some-secret-key')
+        response.set_cookie("loginstatus", value="False")
         #login value/status set to galse
         print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
         sesskey=0
+        response.set_cookie("sesskey", value="0")
         conn.close() #closes connection to sqlite3
         return template('src/html/loginFailure.html', sesskey=sesskey)
     
@@ -73,12 +74,10 @@ def logout():
     response.set_cookie("loginstatus", value="False")
     #sets loginstatus to false
     response.set_cookie("user_id", value='')
-    status = request.get_cookie("loginstatus")
     #sets user_id/username to blank str
     print("USER LOGGED OUT")
-    print(status)
-    abort(401, "You're no longer logged in")
-    #sends user to a 401 page with specific message
+    return template('src/html/logoutSuccess.html')
+        #sends user to a 401 page with specific message
 
 
 #------------------------------------------------------------------------------------------------------------#
@@ -362,6 +361,8 @@ def todo_list_query():
 def new_item():
     loginstatus = request.get_cookie("loginstatus")# requests login status (true or false)
     username = request.get_cookie("user_id")#requests username 
+    print(loginstatus)
+    print(username)
     if loginstatus == "True":
         conn = sql.connect('src/db/users.db')#connects database#connects database
         c = conn.cursor()
@@ -388,9 +389,8 @@ def new_item():
         else:
             print("returning new task page")
             return template('src/html/new_task.html')
-    elif loginstatus == "False":
+    else:
         print("Login status is false, redirecting to login status page")
-        conn.close() #closes database
         redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
