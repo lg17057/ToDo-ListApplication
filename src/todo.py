@@ -39,7 +39,7 @@ def do_login():
     key = cur.fetchone()
     print(key)
     if password == key[0]:
-        response.set_cookie("loginstatus", value="True", secret='some-secret-key')
+        response.set_cookie("loginstatus", value="True")
         response.set_cookie("user_id", username)
         print("Accessing table name {}, using password {}, key={}".format(username,password,key))
         sesskey=1
@@ -60,10 +60,6 @@ def do_login():
 # DESIGNATION PAGE FOR USER NOT LOGGED IN MESSAGE -----------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
 
-@route('/loginstatus')
-def usernotloggedin():
-    return template('src/html/logoutstatus.html')
-
 @route('/logout', method=["GET", "POST"])
 def logout():
     response.set_cookie("loginstatus", value="False")
@@ -71,13 +67,6 @@ def logout():
     print("USER LOGGED OUT")
     abort(401, "You're no longer logged in")
 
-#@post('/logout', method="post")
-#def triggerlogout():
-#    if request.forms.logout():
-#        response.set_cookie("loginstatus", value="False", secret='some-secret-key')
-#        response.set_cookie("user_id", username="UserNotLoggedIn", secret='some-secret-key')
-#        print("USER LOGGED OUT")
-#        return template('src/html/logoutSuccess.html')
     
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR SIGN UP PAGE-------------------------------------------------------------------------------# SIGN UP PAGE
@@ -95,7 +84,7 @@ def userSignUp():
     username = request.forms.get('username')
     global tableforuser
     tableforuser = username
-    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest()
+    password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #password hasing for security
     cur = c.execute('SELECT username FROM user_data WHERE username=?', (username,)) 
     checkUsername = cur.fetchall() # sets the result of SQL query to a varible, str
     now = datetime.now()
@@ -139,7 +128,11 @@ def load_static(filepath):
 @route('/')
 def home_page(): 
     loginstatus = request.get_cookie("loginstatus")
-    return template('src/html/index.html',loginstatus=loginstatus,message2='',message3='',username='',message1='')
+    if loginstatus == "True":
+        loginTrue = 'True'
+        return template('src/html/index.html',loginstatus=loginTrue,message2='',message3='',username='',message1='')
+    return template('src/html/index.html',loginstatus='No User Logged In',message2='',message3='',username='',message1='')
+    
     
 ###### INDEX ROUTE ######
 
@@ -305,26 +298,8 @@ def todo_list():
         print("Login status is false, redirecting to login status page")
         conn.close()
         redirect('/loginstatus')
-
-
-
-#@route('/todo') execute("SELECT weight FROM Equipment WHERE name = :name AND price = :price",
-#def todo_list():
-#
-#    conn = sql.connect('src/db/todo.db')
-#    c = conn.cursor()
-#    c.execute("SELECT id, task, date_created, date_due FROM todo WHERE status LIKE '1' LIMIT 50")
-#    result = c.fetchall()
-#    c.close()
-#    if not result:
-#        redirect('/no_items_in_database')
-#    output = template('src/html/make_table', rows=result)
-#    return output
-#    
+    
 ###### VIEW ALL OPEN ITEMS ######
-
-#query = "SELECT 1 FROM sqlite_master WHERE type='table' and name = ?"
-#    return db.execute(query, (name,)).fetchone() is not None
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR USER TO VIEW CLOSED AND OPEN ITEMS IN todo LIST---------------------------------------# VIEW ALL
@@ -367,6 +342,7 @@ def new_item():
     if loginstatus == "True":
         if request.GET.save:
             conn = sql.connect('src/db/users.db')
+            c = conn.cursor()
             #count = f'''SELECT COUNT (*) from {[username]}'''
             #c.execute(count)
             #cur_result = c.fetchone()
@@ -380,17 +356,16 @@ def new_item():
             insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
             time.sleep(1)
             conn.execute(insert_data, (new, 1, date_due, date_created))
-            new_id = username.lastrowid
+            new_id = conn.lastrowid
             time.sleep(1)
-            conn.commit()
-            conn.close()
+            c.commit()
+            c.close()
             return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
         #elif rows > 50:
             toomanyitems="There are currently too many entries in the database."
             toomanyitems2="Please delete entries to create a new entry"
             toomanyitems3="Maximum of 50 items in a database"
             return template('src/html/index.html', message1=toomanyitems,message2=toomanyitems2,message3=toomanyitems3,username='')
-            #'<h2 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">It appears there are too many entries in the database.</h2><h3 style="font-family: open-sans, sans-serif;font-weight: 300;font-style: normal;">Please Delete Current entries up to 50 to create new entries.</h3><form action="/" method="GET"><input style="font-family: open-sans,sans-serif;font-weight: 300;font-style: normal;padding: 14px 28px;border: 2px solid #555555;text-decoration: none;font-size: 16px;color: #000000;cursor: pointer;background-color: #ffffff;display: block;transition: 0.3s;" type="submit" name="homebutton" value="Return Home" ></form>'
         else:
             return template('src/html/new_task.html')
     elif loginstatus == "False":
@@ -534,5 +509,4 @@ def colourselect():
 #------------------------------------------------------------------------------------------------------------#
 
 run(host='127.1.0.1', port=5500, reloader=True, debug=True)
-response.set_cookie("loginstatus", value="False", secret='some-secret-key')
-response.set_cookie("user_id", username="UserNotLoggedIn", secret='some-secret-key')
+
