@@ -172,31 +172,40 @@ def emailForm():
 ###### EDIT ITEM (INT) ######
 @route('/edit/<no:int>', method='GET')
 def edit_item(no):
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("user_id") 
+    print(loginstatus)
+    if loginstatus == "True":
+        print("Login status is true, continuing to todo list page")
+        if request.GET.save:
+            edit = request.GET.task.strip()
+            status = request.GET.status.strip()
 
-    if request.GET.save:
-        edit = request.GET.task.strip()
-        status = request.GET.status.strip()
+            if status == 'open':
+                status = 1
+            else:
+                status = 0
 
-        if status == 'open':
-            status = 1
+            conn = sql.connect('src/db/users.db')#connects database
+            c = conn.cursor()
+            update = f'''UPDATE [{username}] SET task = ?, status = ? WHERE id LIKE ?'''
+            c.execute(update, (edit, status, no))
+            conn.commit()
+            itemupdated="The Selected Item No#{} has been updated".format(no)
+            return template('src/html/index.html', loginstatus=loginstatus, message1=itemupdated,message2='',message3='',username='', no=no)
         else:
-            status = 0
-
-        conn = sql.connect('src/db/users.db')#connects database
-        c = conn.cursor()
-        c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
-        conn.commit()
-        itemupdated="The Selected Item No#{} has been updated".format(no)
-        return template('src/html/index.html', message1=itemupdated,message2='',message3='',username='', no=no)
-    else:
-        conn = sql.connect('src/db/users.db')#connects database
-        c = conn.cursor()
-        c.execute("SELECT task FROM todo WHERE id LIKE ?", (no,))
-        cur_data = c.fetchone()
-        item_invalid="The Selected Item No#{} does not exist".format(no)
-        if not cur_data:
-            return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
+            conn = sql.connect('src/db/users.db')#connects database
+            c = conn.cursor()
+            select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+            c.execute(select, (no,))
+            cur_data = c.fetchone()
+            item_invalid="The Selected Item No#{} does not exist".format(no)
+            if not cur_data:
+                return template('src/html/index.html', message1=item_invalid,message2='',message3='',username='')
         return template('src/html/edit_task.html', old=cur_data, no=no)
+    elif loginstatus == "False":
+        pass
+    
     
 ###### EDIT ITEM (INT) ######
 
