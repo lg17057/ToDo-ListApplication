@@ -363,38 +363,30 @@ def new_item():
     loginstatus = request.get_cookie("loginstatus")# requests login status (true or false)
     username = request.get_cookie("user_id")#requests username 
     if loginstatus == "True":
+        conn = sql.connect('src/db/users.db')#connects database#connects database
+        c = conn.cursor()
         if request.GET.save: #if user clicks 'save' button on new task page
-            conn = sql.connect('src/db/users.db')#connects database#connects database
-            c = conn.cursor()
-            #count = f'''SELECT COUNT (*) from {[username]}'''
-            #c.execute(count)
-            #cur_result = c.fetchone()
-            #rows = cur_result[0]
-            ##if rows are less than maximum, continue
-        #if rows < 50:
-            new = request.GET.task.strip()
-            date_due = request.GET.date_due.strip()
-            #
-            now = datetime.now()
-            date_created = now.strftime("%d/%m/%Y %H:%M")
-            #variable designated for date created, in years, months, days, hrs and minutes
-            time.sleep(1)
-            insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
-            #chooses username specific table within database, based on cookie "username"
-            time.sleep(1)
-            c.execute(insert_data, (new, 1, date_due, date_created))
-            new_id = c.lastrowid
-            time.sleep(1)
-            conn.commit()
-            conn.close()
-            return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
+            #if rows are less than maximum, continue
+                new = request.GET.task.strip()
+                date_due = request.GET.date_due.strip()
+                #
+                now = datetime.now()
+                date_created = now.strftime("%d/%m/%Y %H:%M")
+                #variable designated for date created, in years, months, days, hrs and minutes
+                time.sleep(1)
+                insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
+                #chooses username specific table within database, based on cookie "username"
+                time.sleep(1)
+                c.execute(insert_data, (new, 1, date_due, date_created))
+                new_id = c.lastrowid
+                time.sleep(1)
+                conn.commit()
+                conn.close()
+                print("NEw item success")
+                return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
             ##if rows are over maxmimum, output error message
-        #elif rows > 50:
-            toomanyitems="There are currently too many entries in the database."
-            toomanyitems2="Please delete entries to create a new entry" #dynamic messages for index page
-            toomanyitems3="Maximum of 50 items in a database"
-            return template('src/html/index.html', message1=toomanyitems,message2=toomanyitems2,message3=toomanyitems3,username='')
         else:
+            print("returning new task page")
             return template('src/html/new_task.html')
     elif loginstatus == "False":
         print("Login status is false, redirecting to login status page")
