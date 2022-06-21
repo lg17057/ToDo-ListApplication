@@ -1,16 +1,37 @@
 # Actual-Code
+## GitHub repository Mid-Year project (LG17057)
 
-My ToDo list will include the following features;
+This project is to create a ToDo List application, using advanced programming techniques, following advanced processes to develop the outcome. 
+This ToDo List application will allow the user to do the following:
 
-User can View All Entries with value 1 - 
-User can View All Entries with value 0 and 1 - 
-User can Add up to 50 entries, each entry with a maximum of 100 characters - 
-User can edit any entry, changing the text, and setting status to either complete or incomplete - 
-User can delete any specific entry - 
-User can delete all entries - 
-User can access a help page - 
-User may trigger a 404 link - 
-User may trigger a 403 link - 
-User may access load page to take user through to other pages - 
-User may access side navigation bar to navigate through website - 
-User may access login and signup pages and register, or login to an existing account - 
+
+### Base(Required) Features;
+
+* User Create and Login to an account
+* User log-out of account
+* View User Specific data entries
+* Create User Specific data entries (inclduing entry number limits)
+* Edit User Specific data entries
+* Delete User Specific data entries (includes delete all items
+* Error pages, including 404, 403
+* Access a help page
+
+
+### Additional Features;
+
+-An Admin page to; -view diagnostic data
+                   -disable specific features (for future users)
+-Settings page for users
+-User can delete account and account data
+  
+  
+### Languages
+
+#### Python 
+
+Using Python 3.10.4 as a framework for the website;
+
+* Bottle as a WSGI framework.
+* Hashlib as a password security system.
+* Sqlite3 as a database management system
+
