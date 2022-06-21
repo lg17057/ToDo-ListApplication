@@ -146,7 +146,7 @@ def load_static(filepath):
 @route('/')
 def home_page(): 
     loginstatus = request.get_cookie("loginstatus") #accesses cookie "loginstatus"
-    if loginstatus == True: #cookie based routing
+    if loginstatus == "True": #cookie based routing
         loginTrue = 'True'
         #^sets loginstatus message to true
         #^^fixes issue with login status being long string of letters/numbers
