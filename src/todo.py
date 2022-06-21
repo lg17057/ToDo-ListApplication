@@ -73,8 +73,10 @@ def logout():
     response.set_cookie("loginstatus", value="False")
     #sets loginstatus to false
     response.set_cookie("user_id", value='')
+    status = request.get_cookie("loginstatus")
     #sets user_id/username to blank str
     print("USER LOGGED OUT")
+    print(status)
     abort(401, "You're no longer logged in")
     #sends user to a 401 page with specific message
 
@@ -108,7 +110,7 @@ def userSignUp():
         if not conn.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
-           time.sleep(1)
+           time.sleep(1.5)
            #fixes issues with database being locked
            conn.execute(createTable)
            time.sleep(1.5)
@@ -145,7 +147,7 @@ def load_static(filepath):
 @route('/')
 def home_page(): 
     loginstatus = request.get_cookie("loginstatus") #accesses cookie "loginstatus"
-    if loginstatus == "True": #cookie based routing
+    if loginstatus == True: #cookie based routing
         loginTrue = 'True'
         #^sets loginstatus message to true
         #^^fixes issue with login status being long string of letters/numbers
@@ -300,7 +302,7 @@ def uDeleteChoice():
 def todo_list():
     conn = sql.connect('src/db/users.db')#connects database
     c = conn.cursor()
-    loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
+    loginstatus = request.get_cookie("loginstatus")
 
     print(loginstatus)
     if loginstatus == "True": #checks whether a user is logged in
