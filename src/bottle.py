@@ -69,7 +69,7 @@ if __name__ == '__main__':
 # Imports and Python 2/3 unification ##########################################
 ###############################################################################
 
-import base64, calendar, cgi, email.utils, functools, hmac, imp, itertools,\
+import base64, calendar, cgi, email.utils, functools, hmac, itertools,\
        mimetypes, os, re, tempfile, threading, time, warnings, weakref, hashlib
 
 from types import FunctionType
@@ -123,6 +123,7 @@ if py3k:
     urlunquote = functools.partial(urlunquote, encoding='latin1')
     from http.cookies import SimpleCookie, Morsel, CookieError
     from collections.abc import MutableMapping as DictMixin
+    from types import ModuleType as new_module
     import pickle
     from io import BytesIO
     import configparser
@@ -143,6 +144,7 @@ else:  # 2.x
     from Cookie import SimpleCookie, Morsel, CookieError
     from itertools import imap
     import cPickle as pickle
+    from imp import new_module
     from StringIO import StringIO as BytesIO
     import ConfigParser as configparser
     from collections import MutableMapping as DictMixin
@@ -1363,7 +1365,7 @@ class BaseRequest(object):
 
     def _get_body_string(self, maxread):
         """ Read body into a string. Raise HTTPError(413) on requests that are
-            to large. """
+            too large. """
         if self.content_length > maxread:
             raise HTTPError(413, 'Request entity too large')
         data = self.body.read(maxread + 1)
@@ -1594,7 +1596,7 @@ class BaseRequest(object):
     def __setattr__(self, name, value):
         if name == 'environ': return object.__setattr__(self, name, value)
         key = 'bottle.request.ext.%s' % name
-        if key in self.environ:
+        if hasattr(self, name):
             raise AttributeError("Attribute already defined: %s" % name)
         self.environ[key] = value
 
@@ -1655,7 +1657,7 @@ class BaseResponse(object):
     default_status = 200
     default_content_type = 'text/html; charset=UTF-8'
 
-    # Header blacklist for specific response codes
+    # Header denylist for specific response codes
     # (rfc2616 section 10.2.3 and 10.3.5)
     bad_headers = {
         204: frozenset(('Content-Type', 'Content-Length')),
@@ -2057,7 +2059,7 @@ class _ImportRedirect(object):
         """ Create a virtual package that redirects imports (see PEP 302). """
         self.name = name
         self.impmask = impmask
-        self.module = sys.modules.setdefault(name, imp.new_module(name))
+        self.module = sys.modules.setdefault(name, new_module(name))
         self.module.__dict__.update({
             '__file__': __file__,
             '__path__': [],
@@ -2066,10 +2068,15 @@ class _ImportRedirect(object):
         })
         sys.meta_path.append(self)
 
+    def find_spec(self, fullname, path, target=None):
+        if '.' not in fullname: return
+        if fullname.rsplit('.', 1)[0] != self.name: return
+        from importlib.util import spec_from_loader
+        return spec_from_loader(fullname, self)
+
     def find_module(self, fullname, path=None):
         if '.' not in fullname: return
-        packname = fullname.rsplit('.', 1)[0]
-        if packname != self.name: return
+        if fullname.rsplit('.', 1)[0] != self.name: return
         return self
 
     def load_module(self, fullname):
@@ -2825,18 +2832,15 @@ def redirect(url, code=None):
     raise res
 
 
-def _file_iter_range(fp, offset, bytes, maxread=1024 * 1024, close=False):
-    """ Yield chunks from a range in a file, optionally closing it at the end.
-        No chunk is bigger than maxread. """
+def _rangeiter(fp, offset, limit, bufsize=1024 * 1024):
+    """ Yield chunks from a range in a file. """
     fp.seek(offset)
-    while bytes > 0:
-        part = fp.read(min(bytes, maxread))
+    while limit > 0:
+        part = fp.read(min(limit, bufsize))
         if not part:
             break
-        bytes -= len(part)
+        limit -= len(part)
         yield part
-    if close:
-        fp.close()
 
 
 def static_file(filename, root,
@@ -2928,8 +2932,8 @@ def static_file(filename, root,
     ims = getenv('HTTP_IF_MODIFIED_SINCE')
     if ims:
         ims = parse_date(ims.split(";")[0].strip())
-    if ims is not None and ims >= int(stats.st_mtime):
-        return HTTPResponse(status=304, **headers)
+        if ims is not None and ims >= int(stats.st_mtime):
+            return HTTPResponse(status=304, **headers)
 
     body = '' if request.method == 'HEAD' else open(filename, 'rb')
 
@@ -2940,9 +2944,10 @@ def static_file(filename, root,
         if not ranges:
             return HTTPError(416, "Requested Range Not Satisfiable")
         offset, end = ranges[0]
+        rlen = end - offset
         headers["Content-Range"] = "bytes %d-%d/%d" % (offset, end - 1, clen)
-        headers["Content-Length"] = str(end - offset)
-        if body: body = _file_iter_range(body, offset, end - offset, close=True)
+        headers["Content-Length"] = str(rlen)
+        if body: body = _closeiter(_rangeiter(body, offset, rlen), body.close)
         return HTTPResponse(body, status=206, **headers)
     return HTTPResponse(body, **headers)
 
@@ -4276,7 +4281,7 @@ def view(tpl_name, **defaults):
                 tplvars.update(result)
                 return template(tpl_name, **tplvars)
             elif result is None:
-                return template(tpl_name, defaults)
+                return template(tpl_name, **defaults)
             return result
 
         return wrapper

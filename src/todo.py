@@ -57,9 +57,17 @@ def do_login():
 ###### LOGIN PAGE ######
 
 #------------------------------------------------------------------------------------------------------------#
-# DESIGNATION PAGE FOR USER NOT LOGGED IN MESSAGE -----------------------------------------------------------#
+# DESIGNATION PAGE FOR LOGINSTATUS PAGE -----------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
 
+@route('/loginstatus')
+def loginstatus():
+    return template('src/html/logoutstatus.html')
+
+#------------------------------------------------------------------------------------------------------------#
+# DESIGNATION PAGE FOR USER NOT LOGGED IN MESSAGE -----------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------
+    
 @route('/logout', method=["GET", "POST"])
 def logout():
     response.set_cookie("loginstatus", value="False")
@@ -67,7 +75,7 @@ def logout():
     print("USER LOGGED OUT")
     abort(401, "You're no longer logged in")
 
-    
+
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR SIGN UP PAGE-------------------------------------------------------------------------------# SIGN UP PAGE
 #------------------------------------------------------------------------------------------------------------#
@@ -337,7 +345,7 @@ def todo_list_query():
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
-    loginstatus = request.get_cookie("loginstatus", secret='some-secret-key')
+    loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id")
     if loginstatus == "True":
         if request.GET.save:
@@ -356,7 +364,7 @@ def new_item():
             insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)'''
             time.sleep(1)
             conn.execute(insert_data, (new, 1, date_due, date_created))
-            new_id = conn.lastrowid
+            new_id = c.lastrowid
             time.sleep(1)
             c.commit()
             c.close()
@@ -370,7 +378,7 @@ def new_item():
             return template('src/html/new_task.html')
     elif loginstatus == "False":
         print("Login status is false, redirecting to login status page")
-        conn.close()
+        c.close()
         redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
