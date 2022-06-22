@@ -216,6 +216,7 @@ def edit_item(no):
     username = request.get_cookie("user_id") 
     print(loginstatus)
     if loginstatus == "True":
+        loginsess='True'
         print("Login status is true, continuing to todo list page")
         if request.GET.save:
             edit = request.GET.task.strip()
@@ -232,7 +233,7 @@ def edit_item(no):
             c.execute(update, (edit, status, no))
             conn.commit()
             itemupdated="The Selected Item No#{} has been updated".format(no)
-            return template('src/html/alteritemsuccss.html', loginstatus=loginstatus, message1=itemupdated,message2='',message3='',username='', no=no)
+            return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=itemupdated,message2='',message3='',username='', no=no)
         else:
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
@@ -241,8 +242,9 @@ def edit_item(no):
             cur_data = c.fetchone()
             item_invalid="The Selected Item No#{} does not exist".format(no)
             if not cur_data:
-                return template('src/html/alteritemsuccess.html', loginstatus=loginstatus, message1=item_invalid,message2='',message3='',username='')
-        return template('src/html/edit_task.html', old=cur_data, no=no)
+                loginsess='True'
+                return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
+        return template('src/html/edit_task.html',loginstatus='True', old=cur_data, no=no)
     else:
         print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
@@ -377,7 +379,7 @@ def delete(no):
             item_invalid="The Selected Item No#{} does not exist".format(no)
             if not cur_data:
                 return template('src/html/index.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
-            return template('src/html/delete.html', loginsstatus=loginsess, old=cur_data, no=no,message2='',message3='',username='')
+            return template('src/html/delete.html', loginstatus=loginsess, old=cur_data, no=no,message2='',message3='',username='')
     else:
         print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
