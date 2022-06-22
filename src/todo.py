@@ -193,7 +193,7 @@ def edit_item(no):
             c.execute(update, (edit, status, no))
             conn.commit()
             itemupdated="The Selected Item No#{} has been updated".format(no)
-            return template('src/html/index.html', loginstatus=loginstatus, message1=itemupdated,message2='',message3='',username='', no=no)
+            return template('src/html/alteritemsuccss.html', loginstatus=loginstatus, message1=itemupdated,message2='',message3='',username='', no=no)
         else:
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
@@ -202,7 +202,7 @@ def edit_item(no):
             cur_data = c.fetchone()
             item_invalid="The Selected Item No#{} does not exist".format(no)
             if not cur_data:
-                return template('src/html/index.html', loginstatus=loginstatus, message1=item_invalid,message2='',message3='',username='')
+                return template('src/html/alteritemsuccess.html', loginstatus=loginstatus, message1=item_invalid,message2='',message3='',username='')
         return template('src/html/edit_task.html', old=cur_data, no=no)
     else:
         print("Login status is false, redirecting to login status page")
@@ -276,7 +276,7 @@ def deleteALLitems():
                 noitemsindatabase = "There are currently no entries in the database"
                 return template('src/html/index.html', loginstatus=loginstatus,message1=noitemsindatabase,message2='',message3='',username='')
             deleteallitemsuccess="Successfully deleted all items in database"
-            return template('src/html/index.html', loginstatus=loginstatus, message1=deleteallitemsuccess,message2='',message3='',username='')
+            return template('src/html/alteritemsuccess.html', loginstatus=loginstatus, message1=deleteallitemsuccess,message2='',message3='',username='')
         else:
             return template('src/html/deleteAllitems')
     elif loginstatus == "False":
@@ -313,7 +313,7 @@ def delete(no):
                 delete_failure="Unable to delete selected item No#{}".format(no)
                 return template('src/html/index.html', loginstatus=loginstatus, message1=delete_failure, no=no,message2='',message3='',username='')
             delete_success="Item No#{} successfully deleted"
-            return template('src/html/index.html', loginstatus=loginstatus, message1=delete_success, no=no,message2='',message3='',username='')
+            return template('src/html/alteritemsuccess.html', loginstatus=loginstatus, message1="Item No#{} successfully deleted".format(no), no=no,message2='',message3='',username='')
 
         else:
             conn = sql.connect('src/db/users.db')#connects database
@@ -344,7 +344,7 @@ def uDeleteChoice():
     print(loginstatus)
 
     if loginstatus == "True":
-        print("Login status is true, continuing to todo list page")
+        print("Login status is true, continuing to delete select page")
         output = template('src/html/deleteSelect.html')
         return output
     else:
@@ -459,7 +459,7 @@ def new_item():
                 time.sleep(1)
                 conn.commit()
                 conn.close()
-                print("NEw item success")
+                print("New item success")
                 return template('src/html/index.html', loginstatus=loginstatus,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
             ##if rows are over maxmimum, output error message
         else:
