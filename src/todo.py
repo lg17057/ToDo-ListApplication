@@ -378,6 +378,9 @@ def todo_list():
         print("Accessing table name {}".format(username))
         result = c.fetchall() #fetches all items in database
         conn.close()
+        if not result:
+            noitemsindatabase = "There are currently no entries in the database"
+            return template('src/html/index.html', loginstatus=loginstatus, message1=noitemsindatabase,message2='',message3='',username='')
         return template('src/html/make_table', diagnostic=username, rows=result )
     else:
         print("Login status is false, redirecting to login status page")
@@ -451,7 +454,7 @@ def new_item():
                 insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
                 #chooses username specific table within database, based on cookie "username"
                 time.sleep(1)
-                c.execute(insert_data, (new, 1, date_due, date_created))
+                c.execute(insert_data, (new, 0, date_due, date_created))
                 new_id = c.lastrowid
                 time.sleep(1)
                 conn.commit()
