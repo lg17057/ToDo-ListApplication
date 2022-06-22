@@ -141,7 +141,9 @@ def userSignUp():
         #checks whether username is null/eqault to 0 (exists)
         #selects username from user_data table to see if user exists
         table_exists = "SELECT username FROM user_data WHERE username = ?"
-        if not conn.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
+        if conn.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
+           return template('src/html/userexists.html', loginstatus="False", message1="User already exists", message2='', message3='')
+        elif not conn.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
            time.sleep(1.5)
