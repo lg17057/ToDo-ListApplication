@@ -134,14 +134,16 @@
         <h1 style="text-align:center;"> Welcome to the Log In page </h1>
         <h2 style="text-align:center;">Enter Credentials: </h2>
         <hr>
-         Username: <input autofocus type="text" maxlength="16" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
-         Password: <input type="password" maxlength="20" placeholder="Password" spellcheck="false" name="password"  title="Enter your password here" id="password-input" required/>
+         Username: <input autofocus type="text" minlength="8"  maxlength="16" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
+         Password: <input type="password" minlength="8"  maxlength="20" placeholder="Password" spellcheck="false" name="password"  title="Enter your password here" id="password-input" required/>
          <hr>
          
          <input name="login" value="Login" type="submit" class="loginBtn"/><input value="Sign Up" onclick="window.location.href='signUp';" type="button" class="signupBtn" name="signUp"/>
     </form>
     <br>
 </div>
+
+
 
 
 

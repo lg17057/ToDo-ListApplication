@@ -100,9 +100,9 @@
               <h1>Register</h1>
               <p>Please fill in this form to create an account.</p>
               <hr>
-              Username: <input maxlength="16" autofocus type="text" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
-              Password: <input maxlength="20" type="password" placeholder="Enter Password" spellcheck="false" name="password" id="password"  required/>
-              Password: <input maxlength="20" type="password" placeholder="Repeat Password" spellcheck="false" name="password-repeat" id="password-repeat"   required/>
+              Username: <input maxlength="16" minlength="8" autofocus type="text" placeholder="Username" spellcheck="false" name="username" title="Enter your username here" id="username-input" required/> 
+              Password: <input maxlength="20" minlength="8" type="password" placeholder="Enter Password" spellcheck="false" name="password" id="password"  required/>
+              Password: <input maxlength="20" minlength="8" type="password" placeholder="Repeat Password" spellcheck="false" name="password-repeat" id="password-repeat"   required/>
               <hr>
               <input name="signup" value="Register" type="submit" class="registerbtn"/>
 

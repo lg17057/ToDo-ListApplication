@@ -46,7 +46,16 @@ def do_login():
         print(key)
         conn.close()
         #if password == key[0]: #checks whether user inputted password is equal to existing password
-        if password == key[0]: #checks whether user inputted password is equal to existing password
+        if password == None or key == None:
+            response.set_cookie("loginstatus", value="False")
+            #login value/status set to galse
+            print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
+            sesskey=0
+            loginstatus="False"
+            response.set_cookie("sesskey", value="0")
+            conn.close() #closes connection to sqlite3
+            return template('src/html/loginFailure.html', sesskey=sesskey, loginstatus=loginstatus)
+        elif password == key[0]: #checks whether user inputted password is equal to existing password
             response.set_cookie("loginstatus", value="True")
             response.set_cookie("user_id", username)
             #login status  set to True, username set to user entered data (if pasword check successful)
@@ -65,6 +74,7 @@ def do_login():
             response.set_cookie("sesskey", value="0")
             conn.close() #closes connection to sqlite3
             return template('src/html/loginFailure.html', sesskey=sesskey, loginstatus=loginstatus)
+        
     else:
         username = request.get_cookie('username')
         loginstatus="True"
