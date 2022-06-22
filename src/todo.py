@@ -35,7 +35,9 @@ def do_login():
     cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
     key = cur.fetchone() #fetches one value from table
     print(key)
-    if password == key[0]: #checks whether user inputted password is equal to existing password
+    one = 1
+    #if password == key[0]: #checks whether user inputted password is equal to existing password
+    if key[0] == password: #checks whether user inputted password is equal to existing password
         response.set_cookie("loginstatus", value="True")
         response.set_cookie("user_id", username)
         #login status  set to True, username set to user entered data (if pasword check successful)
@@ -151,8 +153,8 @@ def home_page():
         loginTrue = 'True'
         #^sets loginstatus message to true
         #^^fixes issue with login status being long string of letters/numbers
-        return template('src/html/index.html',loginstatus=loginTrue,message2='',message3='',username='',message1='')
-    return template('src/html/index.html',loginstatus='No User Logged In',message2='',message3='',username='',message1='')
+        return template('src/html/index.html',loginstatus=loginTrue, display1="block", message2='',message3='',username='',message1='')
+    return template('src/html/index.html',loginstatus='No User Logged In', display2="none", message2='',message3='',username='',message1='')
     
     
 ###### INDEX ROUTE ######

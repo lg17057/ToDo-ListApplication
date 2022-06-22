@@ -38,6 +38,7 @@ body {
   color: #0800ff;
   cursor: pointer;
   background-color: #FFFFFF;
+  display: block;
 }
 
 
