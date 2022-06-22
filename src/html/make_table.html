@@ -3,13 +3,16 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- JAVA SCRIPT-->
-    <script src="/static/openNav.js"></script>
+    <script src="static/openNav.js"></script>
     <script src="static/success.js"></script>
+    <script src="static/modal.js"></script>
     <script src="static/tableSort.js"></script>
+    <script src="static/UserSelect.js"></script>
     <!-- CSS / FONT-->
-    <link rel="stylesheet" type="text/css" href="static/table.css">
+    <link rel="stylesheet" type="text/css" href="static/snackbar.css">
     <link rel="stylesheet" type="text/css" href="static/styles.css">
     <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+    <link rel="stylesheet" type="text/css" href="static/loginStyles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Browser Icon-->
     <link rel="icon" type="image.png" href="static/favicon-16x16.png">
@@ -19,19 +22,29 @@
     <div>
         <!-- User Login Buttons-->
         <div id="userLogin/signUp">
-            <!--
-            <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
-            -->
-            <form action="/loginPage" method="get">
-                <!-- Login   Button-->
-                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
-            </form>
-            <div style="position:relative; top: 1px;">
-                <form action="/signUp" method="get">
-                    <!-- Sign Up  Button-->
-                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
-                </form>
-            </div>
+                <indent>
+                    <%if loginstatus == "True":%>
+                        <form action="/logout" method="get">
+                            <input type="submit" value="Logout"  class="logoutBtn" name="logout" style="float:right;">
+                        </form>
+                    <%else:%>
+                        <form action="/loginPage" method="get">
+                            <!-- Login   Button-->
+                            <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                        </form>
+                        <div style="position:relative; top: 1px;">
+                            <form action="/signUp" method="get">
+                                <!-- Sign Up  Button-->
+                                <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                            </form>
+                        </div>
+                    <%end%>
+                </indent>
+                
+                <!--
+                <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
+                -->
+            
         </div>
         <!-- User Login Buttions-->
 
@@ -43,7 +56,7 @@
                     <input type="submit" name="homeRedirect" value="Home Page">
                 </form>
                 <br>
-                <form action="/userSelectTodo" method="get">
+                <form action="/todo" method="get">
                     <input type="submit" name="todoList" value="View Entries">
                 </form>
                 <br>
@@ -110,6 +123,38 @@
             </table>
           </div>
           <!-- MAIN CONTENT-->
+<style>.todoTable {
+  border: 2px solid #000000;
+}
+.todoTable tr {
+  font-family: open-sans,sans-serif;
+  font-weight: 400;
+  font-style:normal;
+}
 
+.todoTable td {
+  border: 1px solid #000000;
+  border-style:solid;
+}
+            
+.todoTable th {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: rgb(0, 0, 0);
+  font-family: open-sans, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+/* changes row colours */
+.todoTable tr:nth-child(even,odd){background-color: #f2f2f2;}
+.todoTable tr:hover {background-color: #ddd;}
+.todoTable tr:hover TD:nth-child(1){font-weight: bold}
+
+th {
+  cursor: pointer;
+}
+</style>
 </html>
 
