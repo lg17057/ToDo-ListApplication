@@ -92,7 +92,12 @@
 <br>
 <br>
 <br>
-
-
+<form action="127.0.0.1/edit/no" method="GET" id="input">
+    <input type="text" placeholder="Enter Location" id="loc">
+    <input type="submit" value="Submit" onclick="setMode()">
+</form>
+<script>
+    document.getElementById("input").action = "127.0.0.1/edit/" + document.getElementById("loc").value;
+</script>
 <!-- Main Content-->
 </html>
