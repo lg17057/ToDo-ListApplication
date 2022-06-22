@@ -27,10 +27,10 @@ def login():
     if loginstatus == "False":
         return template('src/html/loginPage.html', loginstatus=loginstatus)
     else:
-        username = request.get_cookie('username')
+        username = request.get_cookie("username")
         loginstatus="True"
         sesskey=0
-        return template('src/html/loginSuccess.html',message1='',message2='',message3='', sesskey=sesskey, loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
+        return template('src/html/loginSuccess.html',message1='',message2='',message3='', sesskey=sesskey, loginmessage="You are already logged in.", loginstatus=loginstatus)
 
 @route('/loginPage', method='POST')
 def do_login():
@@ -44,9 +44,9 @@ def do_login():
         cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
         key = cur.fetchone() #fetches one value from table
         print(key)
-        one = 1
+        conn.close()
         #if password == key[0]: #checks whether user inputted password is equal to existing password
-        if key[0] == password: #checks whether user inputted password is equal to existing password
+        if password == key[0]: #checks whether user inputted password is equal to existing password
             response.set_cookie("loginstatus", value="True")
             response.set_cookie("user_id", username)
             #login status  set to True, username set to user entered data (if pasword check successful)
@@ -55,7 +55,7 @@ def do_login():
             conn.close()
             loginstatus="False"
             return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey, loginmessage="Login to website success.", loginstatus=loginstatus)
-        else:
+        elif password != key[0]:
         #elif password != key[0]: #if user input password is not equal to existing password
             response.set_cookie("loginstatus", value="False")
             #login value/status set to galse
