@@ -62,8 +62,8 @@ def do_login():
             print("Accessing table name {}, using password {}, key={}".format(username,password,key))
             sesskey=1
             conn.close()
-            loginstatus="False"
-            return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', sesskey=sesskey, loginmessage="Login to website success.", loginstatus=loginstatus)
+            loginstatus="True"
+            return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
         elif password != key[0]:
         #elif password != key[0]: #if user input password is not equal to existing password
             response.set_cookie("loginstatus", value="False")
@@ -234,10 +234,10 @@ def edit_item(no):
             edit = request.GET.task.strip()
             status = request.GET.status.strip()
 
-            if status == 'open':
-                status = 1
-            else:
+            if status == "Incomplete":
                 status = 0
+            else:
+                status = 1
 
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()

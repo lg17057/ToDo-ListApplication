@@ -96,15 +96,15 @@
             <br>
             <form action="/edit/{{no}}" method="get">
               <input title="Input Field" placeholder="" type="text" name="task" value="{{old[0]}}" size="100" maxlength="100">
-
+              
               
               <input  title="Confirm Edit"  type="submit" name="save" class="saveButton" value="Save">
               <br> 
-                <select  title="Select Item Completion"  name="status ">
-                    <optgroup label="Select Item Status"></optgroup>
-                  <option >Incomplete</option>
-                  <option >Complete</option>
-                </select>
+              <select  title="Select Item Completion"  name="status ">
+                <optgroup label="Select Item Status"></optgroup>
+              <option value="Incomplete">Incomplete</option>
+              <option value="Complete">Complete</option>
+            </select>
             </form>
             <script>function openNav() {
               document.getElementById("mySidenav").style.width = "250px";
