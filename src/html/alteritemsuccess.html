@@ -83,7 +83,14 @@
                       </form>
                   </div>
               </div>
-  
+              <script>
+                function openNav() {
+                  document.getElementById("mySidenav").style.width = "250px";
+              }
+              
+              function closeNav() {
+                  document.getElementById("mySidenav").style.width = "0px";
+              }</script>
               <!--   Menu Button    -->
               <div id="Options">
                   <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
@@ -97,7 +104,7 @@
 <div>
     <!--   To Do List Header    -->
 <div class="main" id="userWelcome" >
-    <h2>{{message1}} Item Success</h2>
+    <h2>{{message1}} </h2>
     <h2>Login Status: {{loginstatus}}</h2>
     <h3>{{message2}}</h3>
 </div>

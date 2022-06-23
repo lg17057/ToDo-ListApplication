@@ -233,19 +233,22 @@ def edit_item(no):
         if request.GET.save:
             edit = request.GET.task.strip()
             status = request.GET.status.strip()
+            conn = sql.connect('src/db/users.db')#connects database
+
+            c = conn.cursor()
 
             if status == "Incomplete":
                 status = 0
             else:
                 status = 1
-
-            conn = sql.connect('src/db/users.db')#connects database
-            c = conn.cursor()
+            select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+            c.execute(select, (no,)) 
+            cur_data = c.fetchone()
             update = f'''UPDATE [{username}] SET task = ?, status = ? WHERE id LIKE ?'''
             c.execute(update, (edit, status, no))
             conn.commit()
             itemupdated="The Selected Item No#{} has been updated".format(no)
-            return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=itemupdated,message2='',message3='',username='', no=no)
+            return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1="Item Value [{}] successfully edited".format(cur_data), no=no,message2="(Item No#{})".format(no),message3='',username='')
         else:
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
@@ -373,14 +376,16 @@ def delete(no):
                 conn = sql.connect('src/db/users.db')#connects database
                 c = conn.cursor()
                 delete = f'''Delete FROM [{username}] where id = ?'''
+                select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+                c.execute(select, (no,)) 
+                cur_data = c.fetchone()
                 c.execute(delete, (no,))
                 conn.commit()
                 c.close()
             else:
                 delete_failure="Unable to delete selected item No#{}".format(no)
                 return template('src/html/index.html', loginstatus=loginsess, message1=delete_failure, no=no,message2='',message3='',username='')
-            delete_success="Item No#{} successfully deleted"
-            return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1="Item No#{} successfully deleted".format(no), no=no,message2='',message3='',username='')
+            return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1="Item Value [{}] successfully deleted".format(cur_data), no=no,message2=" (Item No#{})".format(no),message3='',username='')
 
         else:
             conn = sql.connect('src/db/users.db')#connects database
@@ -497,7 +502,7 @@ def new_item():
                 conn.commit()
                 conn.close()
                 print("New item success")
-                return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success',message2='New Item ID#{}'.format(new_id),message3='',username='')
+                return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; [{}]'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
             ##if rows are over maxmimum, output error message
         else:
             print("returning new task page")
@@ -666,7 +671,8 @@ def colourselect():
 #------------------------------------------------------------------------------------------------------------#
 # RUNS THE WEBSITE ------------------------------------------------------------------------------------------# HOST
 #------------------------------------------------------------------------------------------------------------#
-
-run(host='127.1.0.1', port=5500, reloader=True, debug=True)
 loginsess='False'
 loginstatus='False'
+
+run(host='127.1.0.1', port=5500, reloader=True, debug=True)
+
