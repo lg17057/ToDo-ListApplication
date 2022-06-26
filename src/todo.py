@@ -282,8 +282,9 @@ def uEditChoice():
 
     if loginstatus == "True":
         loginsess='True'
+        recent_item = request.get_cookie("recent")
         print("Login status is true, continuing to edit select page")
-        output = template('src/html/editSelect.html', loginstatus=loginsess)
+        output = template('src/html/editSelect.html', recent=recent_item, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -419,8 +420,9 @@ def uDeleteChoice():
 
     if loginstatus == "True":
         loginsess='True'
+        recent_item = request.get_cookie("recent")
         print("Login status is true, continuing to delete select page")
-        output = template('src/html/deleteSelect.html', loginstatus=loginsess)
+        output = template('src/html/deleteSelect.html',recent=recent_item, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -488,12 +490,14 @@ def new_item():
             #if rows are less than maximum, continue
                 new = request.GET.task.strip()
                 date_due = request.GET.date_due.strip()
-                #
                 now = datetime.now()
                 date_created = now.strftime("%d/%m/%Y %H:%M")
                 #variable designated for date created, in years, months, days, hrs and minutes
                 time.sleep(1)
                 insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
+                
+                response.set_cookie("recent", value=new)
+                recent_item = request.get_cookie("recent")
                 #chooses username specific table within database, based on cookie "username"
                 time.sleep(1)
                 c.execute(insert_data, (new, 0, date_due, date_created))
@@ -502,7 +506,7 @@ def new_item():
                 conn.commit()
                 conn.close()
                 print("New item success")
-                return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; [{}]'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
+                return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; {}'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
             ##if rows are over maxmimum, output error message
         else:
             print("returning new task page")
