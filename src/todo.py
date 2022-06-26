@@ -29,38 +29,30 @@ def login():
     else:
         username = request.get_cookie("username")
         loginstatus="True"
-        sesskey=0
-        return template('src/html/loginSuccess.html',message1='',message2='',message3='', sesskey=sesskey, loginmessage="You are already logged in.", loginstatus=loginstatus)
+        return template('src/html/loginSuccess.html',message1='',message2='',message3='',  loginmessage="You are already logged in.", loginstatus=loginstatus)
 
 @route('/loginPage', method='POST')
 def do_login():
     loginstatus = request.get_cookie('loginstatus')
     if loginstatus == "False":
         global username
-        sesskey = 0
         username = request.forms.get('username') #accesses username entered on login page
         password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #hashed password
         conn = sql.connect('src/db/users.db')#connects database
         cur = conn.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
         key = cur.fetchone() #fetches one value from table
-        print(key)
         conn.close()
         #if password == key[0]: #checks whether user inputted password is equal to existing password
         if password == None or key == None:
             response.set_cookie("loginstatus", value="False")
             #login value/status set to galse
-            print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
-            sesskey=0
             loginstatus="False"
-            response.set_cookie("sesskey", value="0")
             conn.close() #closes connection to sqlite3
-            return template('src/html/loginFailure.html', sesskey=sesskey, loginstatus=loginstatus)
+            return template('src/html/loginFailure.html',  loginstatus=loginstatus)
         elif password == key[0]: #checks whether user inputted password is equal to existing password
             response.set_cookie("loginstatus", value="True")
             response.set_cookie("user_id", username)
             #login status  set to True, username set to user entered data (if pasword check successful)
-            print("Accessing table name {}, using password {}, key={}".format(username,password,key))
-            sesskey=1
             response.set_cookie("recent", value="No new items created")
             response.set_cookie("recentnum", value=0, secret='secretkey' )
             conn.close()
@@ -70,17 +62,14 @@ def do_login():
         #elif password != key[0]: #if user input password is not equal to existing password
             response.set_cookie("loginstatus", value="False")
             #login value/status set to galse
-            print("Attempted accessing table name {}, using password {}, unsuccessfull".format(username,password))
-            sesskey=0
             loginstatus="False"
-            response.set_cookie("sesskey", value="0")
             conn.close() #closes connection to sqlite3
-            return template('src/html/loginFailure.html', sesskey=sesskey, loginstatus=loginstatus)
+            return template('src/html/loginFailure.html', loginstatus=loginstatus)
         
     else:
         username = request.get_cookie('username')
         loginstatus="True"
-        return template('src/html/loginSuccess.html',message1='',message2='',message3='', sesskey=sesskey, loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
+        return template('src/html/loginSuccess.html',message1='',message2='',message3='',  loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
 
 
 
@@ -110,7 +99,6 @@ def logout():
     #sets loginstatus to false
     response.set_cookie("user_id", value='')
     #sets user_id/username to blank str
-    print("USER LOGGED OUT")
     if loginstatus == "True": #cookie based routing
         loginsess = 'True'
     else:
@@ -132,8 +120,7 @@ def signUp():
     else:
         username = request.get_cookie('username')
         loginstatus="True"
-        sesskey=0
-        return template('src/html/loginSuccess.html',message1='',message2='',message3='', sesskey=sesskey, loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
+        return template('src/html/loginSuccess.html',message1='',message2='',message3='',  loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
 
 @post('/signUp')
 def userSignUp():
@@ -230,10 +217,8 @@ def edit_item(no):
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id") 
-    print(loginstatus)
     if loginstatus == "True":
         loginsess='True'
-        print("Login status is true, continuing to todo list page")
         if request.GET.save:
             edit = request.GET.task.strip()
             status = request.GET.status.strip()
@@ -265,7 +250,6 @@ def edit_item(no):
                 return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
         return template('src/html/edit_task.html',loginstatus='True', old=cur_data, no=no)
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
     
     
@@ -282,17 +266,14 @@ def uEditChoice():
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id") 
-    print(loginstatus)
 
     if loginstatus == "True":
         loginsess='True'
         recent_item = request.get_cookie("recent")
-        print("Login status is true, continuing to edit select page")
         recent_num = request.get_cookie("recentnumber",  secret='secretkey')
         output = template('src/html/editSelect.html', recent=recent_item, recentnum=recent_num, loginstatus=loginsess)
         return output
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 
   
@@ -308,13 +289,10 @@ def delete_query():
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id") 
-    print(loginstatus)
     if loginstatus == "True":
-        print("Login status is true, continuing to delete q page")
         output = template('src/html/deleteQ.html', loginstatus='True')
         return output
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
         
 
@@ -331,7 +309,6 @@ def deleteALLitems():
     username = request.get_cookie("user_id") 
 
     if loginstatus == "True":
-        print("Login status is true, continuing to todo list page")
         if request.GET.save: #> user confirms delete all items
             conn = sql.connect('src/db/users.db')#connects database
             c = conn.cursor()
@@ -353,7 +330,6 @@ def deleteALLitems():
         else:
             return template('src/html/deleteAllitems', loginstatus='True')
     elif loginstatus == "False":
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 
     
@@ -374,7 +350,6 @@ def delete(no):
 
     if loginstatus == "True":
         loginsess='True'
-        print("Login status is true, continuing to todo list page")
         if request.GET.save:
             status = request.GET.status.strip()
 
@@ -404,7 +379,6 @@ def delete(no):
                 return template('src/html/index.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
             return template('src/html/delete.html', loginstatus=loginsess, old=cur_data, no=no,message2='',message3='',username='')
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 
     
@@ -421,17 +395,14 @@ def uDeleteChoice():
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id") 
-    print(loginstatus)
 
     if loginstatus == "True":
         loginsess='True'
         recent_item = request.get_cookie("recent")
         recentnum = request.get_cookie("recentnumber", secret='secretkey')
-        print("Login status is true, continuing to delete select page")
         output = template('src/html/deleteSelect.html',recent=recent_item, recentnum=recentnum, loginstatus=loginsess)
         return output
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 
         
@@ -450,17 +421,13 @@ def todo_list():
     c = conn.cursor()
     loginstatus = request.get_cookie("loginstatus")
 
-    print(loginstatus)
     if loginstatus == "True": #checks whether a user is logged in
         loginsess='True'
         username = request.get_cookie("user_id") 
         #gathers cookie "username" for current userame
         #^allows program to access user-username specific content
-        print("Login status is true, continuing to todo list page")
         select_items = f'''SELECT * FROM [{username}]''' #selects user specific content from table
-        print(username)
         c.execute(select_items)
-        print("Accessing table name {}".format(username))
         result = c.fetchall() #fetches all items in database
         conn.close()
         if not result:
@@ -468,7 +435,6 @@ def todo_list():
             return template('src/html/index.html', loginstatus=loginsess, message1=noitemsindatabase,message2='',message3='',username='')
         return template('src/html/make_table', loginstatus=loginsess, diagnostic=username, rows=result )
     else:
-        print("Login status is false, redirecting to login status page")
         conn.close()
         redirect('/loginstatus')
     
@@ -486,8 +452,6 @@ def new_item():
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")# requests login status (true or false)
     username = request.get_cookie("user_id")#requests username 
-    print(loginstatus)
-    print(username)
     if loginstatus == "True":
         loginsess='True'
         conn = sql.connect('src/db/users.db')#connects database#connects database
@@ -514,14 +478,11 @@ def new_item():
                 time.sleep(1)
                 conn.commit()
                 conn.close()
-                print("New item success")
                 return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; {}'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
             ##if rows are over maxmimum, output error message
         else:
-            print("returning new task page")
             return template('src/html/new_task.html', loginstatus=loginsess)
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 ###### CREATE NEW ITEM ######
 
@@ -536,14 +497,11 @@ def makeAnother():
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus")
     username = request.get_cookie("user_id") 
-    print(loginstatus)
     
     if loginstatus == "True":
         loginsess = 'True'
-        print("Login status is true, continuing to make another item page")
         return template('src/html/anotheritem.html', loginstatus=loginsess)
     else:
-        print("Login status is false, redirecting to login status page")
         redirect('/loginstatus')
 
    
@@ -556,11 +514,7 @@ def makeAnother():
 ####### ABOUT ME PAGE #######
 @route('/aboutMe')
 def about_me():
-    loginstatus = request.get_cookie("loginstatus")
-    if loginstatus == "True": #cookie based routing
-        loginsess = 'True'
-    else:
-        loginsess = 'False'
+    
     output = template('src/html/about_me.html', loginstatus=loginsess)
     return output
 
@@ -573,11 +527,7 @@ def about_me():
 ####### HELP THING #######
 @route('/help')
 def help():
-    loginstatus = request.get_cookie("loginstatus")
-    if loginstatus == "True": #cookie based routing
-        loginsess = 'True'
-    else:
-        loginsess = 'False'
+   
     output = template('src/html/help.html', loginstatus=loginsess)
     return output
 ####### HELP THING #######
