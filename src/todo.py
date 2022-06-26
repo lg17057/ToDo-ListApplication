@@ -157,6 +157,8 @@ def userSignUp():
            createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
            insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
            time.sleep(1.5)
+           response.set_cookie("recent", value="This is your first database entry, {}".format(tableforuser))
+
            #fixes issues with database being locked
            conn.execute(createTable)
            time.sleep(1.5)
@@ -284,7 +286,8 @@ def uEditChoice():
         loginsess='True'
         recent_item = request.get_cookie("recent")
         print("Login status is true, continuing to edit select page")
-        output = template('src/html/editSelect.html', recent=recent_item, loginstatus=loginsess)
+        recent_num = request.get_cookie("recentnumber",  secret='secretkey')
+        output = template('src/html/editSelect.html', recent=recent_item, recentnum=recent_item, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -421,8 +424,9 @@ def uDeleteChoice():
     if loginstatus == "True":
         loginsess='True'
         recent_item = request.get_cookie("recent")
+        recent_num = request.get_cookie("recentnumber", secret='secretkey')
         print("Login status is true, continuing to delete select page")
-        output = template('src/html/deleteSelect.html',recent=recent_item, loginstatus=loginsess)
+        output = template('src/html/deleteSelect.html',recent=recent_item, recentnum=recent_num, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -497,11 +501,13 @@ def new_item():
                 insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
                 
                 response.set_cookie("recent", value=new)
-                recent_item = request.get_cookie("recent")
+
                 #chooses username specific table within database, based on cookie "username"
                 time.sleep(1)
                 c.execute(insert_data, (new, 0, date_due, date_created))
                 new_id = c.lastrowid
+                response.set_cookie("recentnumber", value=new_id, secret='secretkey')
+                
                 time.sleep(1)
                 conn.commit()
                 conn.close()
