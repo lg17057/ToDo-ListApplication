@@ -24,9 +24,7 @@
         <div id="userLogin/signUp">
                 <indent>
                     <%if loginstatus == "True":%>
-                        <form action="/logout" method="get">
-                            <input type="submit" value="Logout"  class="logoutBtn" name="logout" style="float:right;">
-                        </form>
+                            <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
                     <%else:%>
                         <form action="/loginPage" method="get">
                             <!-- Login   Button-->
@@ -40,10 +38,7 @@
                         </div>
                     <%end%>
                 </indent>
-                
-                <!--
-                <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
-                -->
+            
             
         </div>
         <!-- User Login Buttions-->

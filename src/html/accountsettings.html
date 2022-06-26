@@ -25,8 +25,7 @@
             <div id="userLogin/signUp">
                     <indent>
                         <%if loginstatus == "True":%>
-                            <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
-                            
+                                <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
                         <%else:%>
                             <form action="/loginPage" method="get">
                                 <!-- Login   Button-->

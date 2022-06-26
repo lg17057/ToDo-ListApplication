@@ -22,11 +22,23 @@
         <div>
             <!-- User Login Buttons-->
             <div id="userLogin/signUp">
-                    
-                    
-                    <!--
-                    <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
-                    -->
+                    <indent>
+                        <%if loginstatus == "True":%>
+                                <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
+                        <%else:%>
+                            <form action="/loginPage" method="get">
+                                <!-- Login   Button-->
+                                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                            </form>
+                            <div style="position:relative; top: 1px;">
+                                <form action="/signUp" method="get">
+                                    <!-- Sign Up  Button-->
+                                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                                </form>
+                            </div>
+                        <%end%>
+                    </indent>
+                
                 
             </div>
             <!-- User Login Buttions-->
