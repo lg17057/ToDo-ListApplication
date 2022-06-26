@@ -22,24 +22,7 @@
         <div>
             <!-- User Login Buttons-->
             <div id="userLogin/signUp">
-                    <indent>
-                        <%if loginstatus == "True":%>
-                            <form action="/logout" method="get">
-                                <input type="submit" value="Logout"  class="logoutBtn" name="logout" style="float:right;">
-                            </form>
-                        <%else:%>
-                            <form action="/loginPage" method="get">
-                                <!-- Login   Button-->
-                                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
-                            </form>
-                            <div style="position:relative; top: 1px;">
-                                <form action="/signUp" method="get">
-                                    <!-- Sign Up  Button-->
-                                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
-                                </form>
-                            </div>
-                        <%end%>
-                    </indent>
+                    
                     
                     <!--
                     <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>

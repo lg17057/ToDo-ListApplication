@@ -79,6 +79,20 @@ def do_login():
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE -----------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
 
+@route('/settingspage')
+def settingspage():
+    loginstatus = request.get_cookie("loginstatus")
+    username = request.get_cookie("username")
+    if loginstatus == "True":
+        loginsess = 'True'
+    else:
+        loginsess='False'
+    return template('src/html/accountsettings.html', loginstatus=loginsess)
+
+#------------------------------------------------------------------------------------------------------------#
+# DESIGNATION PAGE FOR LOGINSTATUS PAGE -----------------------------------------------------------#
+#------------------------------------------------------------------------------------------------------------#
+
 @route('/loginstatus')
 def loginstatus():
     loginstatus = request.get_cookie("loginstatus")

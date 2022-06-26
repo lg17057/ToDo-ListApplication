@@ -25,7 +25,8 @@
             <div id="userLogin/signUp">
                     <indent>
                         <%if loginstatus == "True":%>
-                                <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
+                            <i class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></i>
+                            
                         <%else:%>
                             <form action="/loginPage" method="get">
                                 <!-- Login   Button-->
@@ -91,12 +92,15 @@
 
 <div>
     <!--   To Do List Header    -->
+
+    <hr>
+
+<h1>Settings Page</h1>
+
 <div class="main" id="userWelcome" >
-    <h1> Welcome to your To-Do List {{username}}</h1>
-    <h2>Login Status: {{loginstatus}}</h2>
-    <h3>{{message1}}</h3>
-    <h4>{{message2}}</h4>
-    <h5>{{message3}}</h5>
+    <form action="/logout" method="get">
+        <input type="submit" value="Logout"  class="logoutBtn" name="logout" style="float:right;position: relative; top:-60px">
+    </form>
 </div>
 <br>
 <br>
