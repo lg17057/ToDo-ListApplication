@@ -61,6 +61,8 @@ def do_login():
             #login status  set to True, username set to user entered data (if pasword check successful)
             print("Accessing table name {}, using password {}, key={}".format(username,password,key))
             sesskey=1
+            response.set_cookie("recent", value="No new items created")
+            response.set_cookie("recentnum", value=0, secret='secretkey' )
             conn.close()
             loginstatus="True"
             return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
@@ -287,7 +289,7 @@ def uEditChoice():
         recent_item = request.get_cookie("recent")
         print("Login status is true, continuing to edit select page")
         recent_num = request.get_cookie("recentnumber",  secret='secretkey')
-        output = template('src/html/editSelect.html', recent=recent_item, recentnum=recent_item, loginstatus=loginsess)
+        output = template('src/html/editSelect.html', recent=recent_item, recentnum=recent_num, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -424,9 +426,9 @@ def uDeleteChoice():
     if loginstatus == "True":
         loginsess='True'
         recent_item = request.get_cookie("recent")
-        recent_num = request.get_cookie("recentnumber", secret='secretkey')
+        recentnum = request.get_cookie("recentnumber", secret='secretkey')
         print("Login status is true, continuing to delete select page")
-        output = template('src/html/deleteSelect.html',recent=recent_item, recentnum=recent_num, loginstatus=loginsess)
+        output = template('src/html/deleteSelect.html',recent=recent_item, recentnum=recentnum, loginstatus=loginsess)
         return output
     else:
         print("Login status is false, redirecting to login status page")
@@ -506,6 +508,7 @@ def new_item():
                 time.sleep(1)
                 c.execute(insert_data, (new, 0, date_due, date_created))
                 new_id = c.lastrowid
+                
                 response.set_cookie("recentnumber", value=new_id, secret='secretkey')
                 
                 time.sleep(1)
