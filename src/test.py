@@ -1,9 +1,19 @@
-import hashlib
-import sqlite3 
+import bottle
+from beaker.middleware import SessionMiddleware
 
-#con = sql.connect("src/db/users.db")
-#cur = con.cursor()
-#statement = "SELECT username, password FROM user_data"
-#cur.execute(statement)
-#print(cur.fetchall())
+session_opts = {
+    'session.type': 'file',
+    'session.cookie_expires': 300,
+    'session.data_dir': './data',
+    'session.auto': True
+}
+app = SessionMiddleware(bottle.app(), session_opts)
 
+@bottle.route('/test')
+def test():
+  s = bottle.request.environ.get('beaker.session')
+  s['test'] = s.get('test',0) + 1
+  s.save()
+  return 'Test counter: %d' % s['test']
+
+bottle.run(app=app)

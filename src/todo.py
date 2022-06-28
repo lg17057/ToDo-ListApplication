@@ -30,15 +30,17 @@ class openDB():
         self.obj.close()
 
 
+class userLoggedin:
+    def __enter__(self):
+        status = request.get_cookie("loginstatus")
+        if status == "True":
+            return 
+        else:
+            redirect('/loginstatus')
 
-
-
-
-
-
-
-
-
+    def __exit__(self, type, value, traceback):
+        return
+        
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
@@ -218,7 +220,6 @@ def load_static(filepath):
 ###### INDEX ROUTE ######
 @route('/')
 def home_page(): 
-    loginsess='False'
     loginstatus='False'
     loginstatus = request.get_cookie("loginstatus") #accesses cookie "loginstatus"
     if loginstatus == "True": #cookie based routing
@@ -248,17 +249,12 @@ def emailForm():
 @route('/edit/<no:int>', method='GET')
 def edit_item(no):
     with openDB('src/db/users.db') as c:
-        loginsess='False'
-        loginstatus='False'
-        loginstatus = request.get_cookie("loginstatus")
-        username = request.get_cookie("user_id") 
-        if loginstatus == "True":
+        with userLoggedin():
+            username = request.get_cookie("user_id") 
             loginsess='True'
             if request.GET.save:
                 edit = request.GET.task.strip()
                 status = request.GET.status.strip()
-
-
                 if status == "Incomplete":
                     status = 0
                 else:
@@ -271,7 +267,6 @@ def edit_item(no):
                 itemupdated="The Selected Item No#{} has been updated".format(no)
                 return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1="Item Value [{}] successfully edited".format(cur_data), no=no,message2="(Item No#{})".format(no),message3='',username='')
             else:
-
                 select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
                 c.execute(select, (no,))
                 cur_data = c.fetchone()
@@ -280,8 +275,7 @@ def edit_item(no):
                     loginsess='True'
                     return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
             return template('src/html/edit_task.html',loginstatus='True', old=cur_data, no=no)
-        else:
-            redirect('/loginstatus')
+            
     
     
 ###### EDIT ITEM (INT) ######
@@ -293,20 +287,14 @@ def edit_item(no):
 ####### PRELIMINARY EDIT ######
 @route('/edit/editSelect')
 def uEditChoice():
-    loginsess='False'
-    loginstatus='False'
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("user_id") 
-
-    if loginstatus == "True":
+    with userLoggedin():
+        username = request.get_cookie("user_id") 
         loginsess='True'
         recent_item = request.get_cookie("recent")
         recent_num = request.get_cookie("recentnumber",  secret='secretkey')
         output = template('src/html/editSelect.html', recent=recent_item, recentnum=recent_num, loginstatus=loginsess)
         return output
-    else:
-        redirect('/loginstatus')
-
+        
   
 ####### PRELIMINARY EDIT ######
 
@@ -316,15 +304,12 @@ def uEditChoice():
 
 @route('/deleteQ')
 def delete_query():
-    loginsess='False'
-    loginstatus='False'
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("user_id") 
-    if loginstatus == "True":
+
+    with userLoggedin():    
+        username = request.get_cookie("user_id")
         output = template('src/html/deleteQ.html', loginstatus='True')
         return output
-    else:
-        redirect('/loginstatus')
+
         
 
 #------------------------------------------------------------------------------------------------------------#
@@ -334,24 +319,15 @@ def delete_query():
 ##### DELETE ALL ITEMS ####
 @route('/deleteAllitems')
 def deleteALLitems():
-    with openDB('src/db/users.db') as c:
-        loginsess='False'
-        loginstatus='False'
-        loginstatus = request.get_cookie("loginstatus")
-        username = request.get_cookie("user_id") 
-
-        if loginstatus == "True":
+    with userLoggedin():
+        with openDB('src/db/users.db') as c:
+            username = request.get_cookie("user_id") 
             if request.GET.save: #> user confirms delete all items
-                
+
                 result = c.fetchall() #fetches all items
                 deleteall = f'''DELETE FROM [{username}]''' #deletes all items in table
                 c.execute(deleteall) #executes 'deleteall'
-
-                loginstatus = request.get_cookie("loginstatus")
-                if loginstatus == "True": #cookie based routing
-                    loginsess = 'True'
-                else:
-                    loginsess = 'False'
+                loginsess = 'True'
                 if not result: #checks whether there are items in table
                     noitemsindatabase = "There are currently no entries in the database"
                     return template('src/html/index.html', loginstatus=loginsess,message1=noitemsindatabase,message2='',message3='',username='')
@@ -359,9 +335,6 @@ def deleteALLitems():
                 return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1=deleteallitemsuccess,message2='',message3='',username='')
             else:
                 return template('src/html/deleteAllitems', loginstatus='True')
-        elif loginstatus == "False":
-            redirect('/loginstatus')
-
     
 
 ##### DELETE ALL ITEMS ####
@@ -373,33 +346,25 @@ def deleteALLitems():
 ###### DELETE ITEM ######
 @route('/delete/<no:int>')
 def delete(no):
-    with openDB('src/db/users.db') as c:
+    with userLoggedin():
+        with openDB('src/db/users.db') as c:
+            username = request.get_cookie("user_id") 
 
-        loginsess='False'
-        loginstatus='False'
-        loginstatus = request.get_cookie("loginstatus")
-        username = request.get_cookie("user_id") 
-
-        if loginstatus == "True":
             loginsess='True'
             if request.GET.save:
                 status = request.GET.status.strip()
-
                 if status == 'Confirm Delete':
-                    
+
                     delete = f'''Delete FROM [{username}] where id = ?'''
                     select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
                     c.execute(select, (no,)) 
                     cur_data = c.fetchone()
                     c.execute(delete, (no,))
-
                 else:
                     delete_failure="Unable to delete selected item No#{}".format(no)
                     return template('src/html/index.html', loginstatus=loginsess, message1=delete_failure, no=no,message2='',message3='',username='')
                 return template('src/html/alteritemsuccess.html', loginstatus=loginsess, message1="Item Value [{}] successfully deleted".format(cur_data), no=no,message2=" (Item No#{})".format(no),message3='',username='')
-
             else:
-
                 select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
                 c.execute(select, (no,)) 
                 cur_data = c.fetchone()
@@ -407,8 +372,7 @@ def delete(no):
                 if not cur_data:
                     return template('src/html/index.html', loginstatus=loginsess, message1=item_invalid,message2='',message3='',username='')
                 return template('src/html/delete.html', loginstatus=loginsess, old=cur_data, no=no,message2='',message3='',username='')
-        else:
-            redirect('/loginstatus')
+       
 
     
 ###### DELETE ITEM ######
@@ -420,19 +384,15 @@ def delete(no):
 ####### PRELIMINARY Delete ######
 @route('/delete/deleteSelect')
 def uDeleteChoice():
-    loginsess='False'
-    loginstatus='False'
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("user_id") 
+    with userLoggedin():
+        username = request.get_cookie("user_id") 
 
-    if loginstatus == "True":
         loginsess='True'
         recent_item = request.get_cookie("recent")
         recentnum = request.get_cookie("recentnumber", secret='secretkey')
         output = template('src/html/deleteSelect.html',recent=recent_item, recentnum=recentnum, loginstatus=loginsess)
         return output
-    else:
-        redirect('/loginstatus')
+
 
         
 ####### PRELIMINARY Delete ######
@@ -443,13 +403,9 @@ def uDeleteChoice():
 
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
-def todo_list():    
-    with openDB('src/db/users.db') as c:
-        loginsess='False'
-        loginstatus='False'
-        loginstatus = request.get_cookie("loginstatus")
-
-        if loginstatus == "True": #checks whether a user is logged in
+def todo_list(): 
+    with userLoggedin():   
+        with openDB('src/db/users.db') as c:
             loginsess='True'
             username = request.get_cookie("user_id") 
             #gathers cookie "username" for current userame
@@ -461,8 +417,7 @@ def todo_list():
                 noitemsindatabase = "There are currently no entries in the database"
                 return template('src/html/index.html', loginstatus=loginsess, message1=noitemsindatabase,message2='',message3='',username='')
             return template('src/html/make_table', loginstatus=loginsess, diagnostic=username, rows=result )
-        else:
-            redirect('/loginstatus')
+
     
 ###### VIEW ALL OPEN ITEMS ######
     
@@ -474,13 +429,9 @@ def todo_list():
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
-    with openDB('src/db/users.db') as c:
-
-        loginsess='False'
-        loginstatus='False'
-        loginstatus = request.get_cookie("loginstatus")# requests login status (true or false)
-        username = request.get_cookie("user_id")#requests username 
-        if loginstatus == "True":
+    with userLoggedin():
+        with openDB('src/db/users.db') as c:
+            username = request.get_cookie("user_id")#requests username 
             loginsess='True'
             if request.GET.save: #if user clicks 'save' button on new task page
                 #if rows are less than maximum, continue
@@ -491,23 +442,18 @@ def new_item():
                     #variable designated for date created, in years, months, days, hrs and minutes
                     time.sleep(1)
                     insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
-
                     response.set_cookie("recent", value=new)
-
                     #chooses username specific table within database, based on cookie "username"
                     time.sleep(1)
                     c.execute(insert_data, (new, 0, date_due, date_created))
                     new_id = c.lastrowid
-
                     response.set_cookie("recentnumber", value=new_id, secret='secretkey')
-
                     time.sleep(1)
                     return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; {}'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
                 ##if rows are over maxmimum, output error message
             else:
                 return template('src/html/new_task.html', loginstatus=loginsess)
-        else:
-            redirect('/loginstatus')
+
 ###### CREATE NEW ITEM ######
 
 #------------------------------------------------------------------------------------------------------------#
@@ -517,16 +463,11 @@ def new_item():
 ##### MAKE ANOTHER ITEM? #####
 @route('/anotheritem')
 def makeAnother():
-    loginsess='False'
-    loginstatus='False'
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("user_id") 
-    
-    if loginstatus == "True":
+    with userLoggedin():
+        username = request.get_cookie("user_id") 
         loginsess = 'True'
         return template('src/html/anotheritem.html', loginstatus=loginsess)
-    else:
-        redirect('/loginstatus')
+    
 
    
 #### MAKE ANOTHER ITEM? #####
@@ -652,14 +593,17 @@ def colourselect():
 
 ##### COLOUR OPTION ######
 
-
+def loginstatus():
+    response.set_cookie("loginstatus", value="False")
+    loginsess = "False"
 
 
 #------------------------------------------------------------------------------------------------------------#
 # RUNS THE WEBSITE ------------------------------------------------------------------------------------------# HOST
-#------------------------------------------------------------------------------------------------------------#
-loginsess='False'
-loginstatus='False'
+#---------------
+# ---------------------------------------------------------------------------------------------#
 
+
+loginsess="False"
 run(host='127.1.0.1', port=5500, reloader=True, debug=True)
-
+loginstatus()
