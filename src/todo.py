@@ -142,6 +142,7 @@ def adminpage():
             return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
         else:
             c.execute("SELECT COUNT(*) FROM user_data")
+
             num_users = c.fetchall()
             loginsess = 'True'
             return template('src/html/adminpage.html', num_users=num_users, loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID, cookie4=recent)
@@ -149,7 +150,11 @@ def adminpage():
 
 @route('/userdata')
 def user_data():
-    return template('src/html/userdata.html')
+    with openDB('src/db/users.db') as c:
+        c.execute("SELECT user_id, username, logins, num_entries FROM user_data")
+        result = c.fetchall()
+
+        return template('src/html/userdata.html', rows=result, loginstatus="True")
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
@@ -364,6 +369,7 @@ def deleteALLitems():
 
                 result = c.fetchall() #fetches all items
                 deleteall = f'''DELETE FROM [{username}]''' #deletes all items in table
+                c.execute("UPDATE user_data SET num_entries = ? WHERE username = ?", (0,username,))
                 c.execute(deleteall) #executes 'deleteall'
                 loginsess = 'True'
                 if not result: #checks whether there are items in table
@@ -395,6 +401,8 @@ def delete(no):
 
                     delete = f'''Delete FROM [{username}] where id = ?'''
                     select = f'''SELECT task FROM [{username}] WHERE id LIKE ?'''
+                    c.execute("UPDATE user_data SET num_entries = num_entries - 1 WHERE username = ?", (username,))
+                    time.sleep(1)
                     c.execute(select, (no,)) 
                     cur_data = c.fetchone()
                     c.execute(delete, (no,))
