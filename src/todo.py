@@ -65,29 +65,43 @@ def do_login():
             global username
             username = request.forms.get('username') #accesses username entered on login page
             password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #hashed password
-            cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
-            key = cur.fetchone() #fetches one value from table
+
             #if password == key[0]: #checks whether user inputted password is equal to existing password
-            if password == None or key == None:
-                response.set_cookie("loginstatus", value="False")
-                #login value/status set to galse
-                loginstatus="False"
-                return template('src/html/loginFailure.html',  loginstatus=loginstatus)
-            elif password == key[0]: #checks whether user inputted password is equal to existing password
+            if username == "adminkey":
                 response.set_cookie("loginstatus", value="True")
+                response.set_cookie("admin", value="True")
                 response.set_cookie("user_id", username)
-                #login status  set to True, username set to user entered data (if pasword check successful)
-                response.set_cookie("recent", value="No new items created")
-                num=0
-                response.set_cookie("recentnum", value=num, secret='secretkey' )
-                loginstatus="True"
-                return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
-            elif password != key[0]:
-            #elif password != key[0]: #if user input password is not equal to existing password
-                response.set_cookie("loginstatus", value="False")
-                #login value/status set to galse
-                loginstatus="False"
-                return template('src/html/loginFailure.html', loginstatus=loginstatus)
+                loginstatus = "True"
+                return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
+            else:
+
+                cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
+                key = cur.fetchone() #fetches one value from table
+                if password == None or key == None:
+                    response.set_cookie("loginstatus", value="False")
+                    #login value/status set to galse
+                    loginstatus="False"
+                    response.set_cookie("admin", value="False")
+
+                    return template('src/html/loginFailure.html',  loginstatus=loginstatus)
+
+                elif password == key[0]: #checks whether user inputted password is equal to existing password
+                    response.set_cookie("loginstatus", value="True")
+                    response.set_cookie("user_id", username)
+                    #login status  set to True, username set to user entered data (if pasword check successful)
+                    response.set_cookie("recent", value="No new items created")
+                    num=0
+                    response.set_cookie("recentnum", value=num, secret='secretkey' )
+                    loginstatus="True"
+                    response.set_cookie("admin", value="False")
+                    return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
+                elif password != key[0]:
+                #elif password != key[0]: #if user input password is not equal to existing password
+                    response.set_cookie("loginstatus", value="False")
+                    response.set_cookie("admin", value="False")
+                    #login value/status set to galse
+                    loginstatus="False"
+                    return template('src/html/loginFailure.html', loginstatus=loginstatus)
 
         else:
             username = request.get_cookie('username')
@@ -99,19 +113,18 @@ def do_login():
 ###### LOGIN PAGE ######
 
 #------------------------------------------------------------------------------------------------------------#
-# DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
+# DESIGNATION PAGE FOR SETTINGS OR ADMIN  PAGE ---------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
-
 @route('/settingspage')
-def settingspage():
-    loginstatus = request.get_cookie("loginstatus")
-    username = request.get_cookie("username")
-    
-    loginsess = 'True'
-    return template('src/html/accountsettings.html', loginstatus=loginsess)
+def adminpage():
+    adminstatus = request.get_cookie("admin")
 
-    
-
+    if adminstatus == "False":
+        loginsess = 'True'
+        return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
+    else:
+        loginsess = 'True'
+        return template('src/html/adminpage.html', loginstatus=loginsess, login=loginsess)
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
@@ -174,26 +187,26 @@ def userSignUp():
         date_created = now.strftime("%d/%m/%Y %H:%M")
         #sets date variable
         if checkUsername != 0:
-            #checks whether username is null/eqault to 0 (exists)
-            #selects username from user_data table to see if user exists
-            table_exists = "SELECT username FROM user_data WHERE username = ?"
-            if c.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
-               return template('src/html/userexists.html', loginstatus="False", message1="User already exists", message2='', message3='')
-            elif not c.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
-               createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
-               insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}', Black)"
-               time.sleep(1.5)
-               response.set_cookie("recent", value="This is your first database entry, {}".format(tableforuser))
+                #checks whether username is null/eqault to 0 (exists)
+                #selects username from user_data table to see if user exists
+                table_exists = "SELECT username FROM user_data WHERE username = ?"
+                if c.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
+                   return template('src/html/userexists.html', loginstatus="False", message1="User already exists", message2='', message3='')
+                elif not c.execute(table_exists, (tableforuser,)).fetchone(): #checks whether table with username trying to be entered exists
+                   createTable = f"CREATE TABLE [{tableforuser}](id INTEGER PRIMARY KEY, task char(100) NOT NULL, status bool NOT NULL, date_due TEXT NOT NULL, date_created TEXT NOT NULL)"
+                   insertTable = f"INSERT INTO [{tableforuser}](task,status,date_due,date_created) VALUES ('This is your first database entry, {tableforuser}',0,'Never','{date_created}')"
+                   time.sleep(1.5)
+                   response.set_cookie("recent", value="This is your first database entry, {}".format(tableforuser))
 
-               #fixes issues with database being locked
-               c.execute(createTable)
-               time.sleep(1.5)
-               c.execute(insertTable)       
-            c.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
-            #commts username and hashed password data to user_data table
+                   #fixes issues with database being locked
+                   c.execute(createTable)
+                   time.sleep(1.5)
+                   c.execute(insertTable)       
+                c.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
+                #commts username and hashed password data to user_data table
 
-            #commits data to file and closes sqlite connection
-            redirect('/loginPage')
+                #commits data to file and closes sqlite connection
+                redirect('/loginPage')
         else: #if error occurs
             signuperror = "There was an error with creating user with name {}".format(username)
             return template('src/html/index.html',loginstatus=loginstatus, message1=signuperror,message2='',message3='',username='')
