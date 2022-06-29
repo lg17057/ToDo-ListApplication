@@ -4,6 +4,10 @@
 This project is to create a ToDo List application, using advanced programming techniques, following advanced processes to develop the outcome. 
 This ToDo List application will allow the user to do the following:
 
+## USE:
+Admin Credentials:
+                -'adminkey'
+                -'adminkey123'
 
 ### Base(Required) Features;
 
