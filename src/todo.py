@@ -63,16 +63,19 @@ def do_login():
         loginstatus = request.get_cookie('loginstatus')
         if loginstatus == "False":
             global username
-            username = request.forms.get('username') #accesses username entered on login page
+            username = request.forms.get('username').strip() #accesses username entered on login page
             password = hashlib.sha512(request.forms.get('password').encode('utf8')).hexdigest() #hashed password
 
             #if password == key[0]: #checks whether user inputted password is equal to existing password
             if username == "adminkey":
-                response.set_cookie("loginstatus", value="True")
-                response.set_cookie("admin", value="True")
-                response.set_cookie("user_id", username)
-                loginstatus = "True"
-                return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
+                cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+                key = cur.fetchone()
+                if password == key[0]:
+                    response.set_cookie("loginstatus", value="True")
+                    response.set_cookie("admin", value="True")
+                    response.set_cookie("user_id", username)
+                    loginstatus = "True"
+                    return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
             else:
 
                 cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
