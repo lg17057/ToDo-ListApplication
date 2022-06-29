@@ -47,6 +47,14 @@ class userLoggedin:
 #------------------------------------------------------------------------------------------------------------#
 
 
+def loginsuccess():
+    with openDB('src/db/users.db') as c:
+        username = request.get_cookie("user_id")
+        username = "adminkey"
+        c.execute("SELECT logins FROM user_data WHERE username = ?", (username,))
+
+        c.execute("UPDATE user_data SET logins = ? WHERE username = ?", (2, username))
+
 @route('/loginPage')
 def login():
     loginstatus = request.get_cookie("loginstatus")
@@ -75,6 +83,7 @@ def do_login():
                     response.set_cookie("admin", value="True")
                     response.set_cookie("user_id", username)
                     loginstatus = "True"
+                    loginsuccess()
                     return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
                 else:
                     response.set_cookie("loginstatus", value="False")
@@ -83,7 +92,6 @@ def do_login():
                     loginstatus="False"
                     return template('src/html/loginFailure.html', loginstatus=loginstatus)
             else:
-
                 cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
                 key = cur.fetchone() #fetches one value from table
                 if password == None or key == None:
@@ -103,6 +111,7 @@ def do_login():
                     response.set_cookie("recentnum", value=num, secret='secretkey' )
                     loginstatus="True"
                     response.set_cookie("admin", value="False")
+                    loginsuccess()
                     return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
                 elif password != key[0]:
                 #elif password != key[0]: #if user input password is not equal to existing password
@@ -127,17 +136,15 @@ def do_login():
 @route('/settingspage')
 def adminpage():
     loginstatus = request.get_cookie("loginstatus")
-    if loginstatus == "True":
-        adminstatus = request.get_cookie("admin")
-        userID = request.get_cookie("user_id")
-        if adminstatus == "False":
-            loginsess = 'True'
-            return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
-        else:
-            loginsess = 'True'
-            return template('src/html/adminpage.html', num_users='', loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID)
+    adminstatus = request.get_cookie("admin")
+    userID = request.get_cookie("user_id")
+    if adminstatus == "False":
+        loginsess = 'True'
+        return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
     else:
-        redirect('/loginstatus')
+        loginsess = 'True'
+        return template('src/html/adminpage.html', num_users='', loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID)
+    
 
 @route('/userdata')
 def user_data():
