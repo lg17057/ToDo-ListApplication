@@ -132,15 +132,19 @@ def do_login():
 #------------------------------------------------------------------------------------------------------------#
 @route('/settingspage')
 def adminpage():
-    loginstatus = request.get_cookie("loginstatus")
-    adminstatus = request.get_cookie("admin")
-    userID = request.get_cookie("user_id")
-    if adminstatus == "False":
-        loginsess = 'True'
-        return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
-    else:
-        loginsess = 'True'
-        return template('src/html/adminpage.html', num_users='', loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID)
+    with openDB('src/db/users.db') as c:
+        loginstatus = request.get_cookie("loginstatus")
+        adminstatus = request.get_cookie("admin")
+        userID = request.get_cookie("user_id")
+        recent = request.get_cookie("recent")
+        if adminstatus == "False":
+            loginsess = 'True'
+            return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
+        else:
+            c.execute("SELECT COUNT(*) FROM user_data")
+            num_users = c.fetchall()
+            loginsess = 'True'
+            return template('src/html/adminpage.html', num_users=num_users, loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID, cookie4=recent)
     
 
 @route('/userdata')
@@ -168,13 +172,11 @@ def loginstatus():
 @route('/logout', method=["GET", "POST"])
 def logout():
     response.set_cookie("loginstatus", value="False")
+    response.set_cookie("admin", value="False")
     #sets loginstatus to false
     response.set_cookie("user_id", value='')
     #sets user_id/username to blank str
-    if loginstatus == "True": #cookie based routing
-        loginsess = 'True'
-    else:
-        loginsess = 'False'
+    loginsess = 'False'
     return template('src/html/logoutSuccess.html', loginstatus=loginsess)
         #sends user to a 401 page with specific message
 
@@ -225,7 +227,7 @@ def userSignUp():
                    c.execute(createTable)
                    time.sleep(1.5)
                    c.execute(insertTable)       
-                c.execute("INSERT INTO user_data (username, password) VALUES (?, ?)", (username, password))
+                c.execute("INSERT INTO user_data (username, password, logins, num_entries) VALUES (?, ?, ?, ?)", (username, password, 0, 1))
                 #commts username and hashed password data to user_data table
 
                 #commits data to file and closes sqlite connection
@@ -462,9 +464,14 @@ def todo_list():
 # DESIGNATION FOR USER TO CREATE NEW todo ITEM---------------------------------------------------------------# CREATE 
 #------------------------------------------------------------------------------------------------------------#
 
+
+        
+
+
 ###### CREATE NEW ITEM ######
 @route('/new', method='GET')
 def new_item():
+    
     with userLoggedin():
         with openDB('src/db/users.db') as c:
             username = request.get_cookie("user_id")#requests username 
@@ -476,7 +483,6 @@ def new_item():
                     now = datetime.now()
                     date_created = now.strftime("%d/%m/%Y %H:%M")
                     #variable designated for date created, in years, months, days, hrs and minutes
-                    time.sleep(1)
                     insert_data = f'''INSERT INTO [{username}] (task,status,date_due,date_created) VALUES (?,?,?,?)''' 
                     response.set_cookie("recent", value=new)
                     #chooses username specific table within database, based on cookie "username"
@@ -485,6 +491,8 @@ def new_item():
                     new_id = c.lastrowid
                     response.set_cookie("recentnumber", value=new_id, secret='secretkey')
                     time.sleep(1)
+                    c.execute("SELECT num_entries FROM user_data WHERE username = ?", (username,))
+                    c.execute("UPDATE user_data SET num_entries = num_entries + 1 WHERE username = ?", (username,))
                     return template('src/html/index.html', loginstatus=loginsess,rows='',message1='Create New Item Success; {}'.format(new),message2='New Item ID#{};'.format(new_id),message3='',username='')
                 ##if rows are over maxmimum, output error message
             else:
