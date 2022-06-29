@@ -76,6 +76,12 @@ def do_login():
                     response.set_cookie("user_id", username)
                     loginstatus = "True"
                     return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
+                else:
+                    response.set_cookie("loginstatus", value="False")
+                    response.set_cookie("admin", value="False")
+                    #login value/status set to galse
+                    loginstatus="False"
+                    return template('src/html/loginFailure.html', loginstatus=loginstatus)
             else:
 
                 cur = c.execute("SELECT password FROM user_data WHERE username = ?", (username,)) #selects password from user data
@@ -120,14 +126,22 @@ def do_login():
 #------------------------------------------------------------------------------------------------------------#
 @route('/settingspage')
 def adminpage():
-    adminstatus = request.get_cookie("admin")
-
-    if adminstatus == "False":
-        loginsess = 'True'
-        return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
+    loginstatus = request.get_cookie("loginstatus")
+    if loginstatus == "True":
+        adminstatus = request.get_cookie("admin")
+        userID = request.get_cookie("user_id")
+        if adminstatus == "False":
+            loginsess = 'True'
+            return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
+        else:
+            loginsess = 'True'
+            return template('src/html/adminpage.html', num_users='', loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID)
     else:
-        loginsess = 'True'
-        return template('src/html/adminpage.html', loginstatus=loginsess, login=loginsess)
+        redirect('/loginstatus')
+
+@route('/userdata')
+def user_data():
+    return template('src/html/userdata.html')
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
@@ -159,6 +173,8 @@ def logout():
         loginsess = 'False'
     return template('src/html/logoutSuccess.html', loginstatus=loginsess)
         #sends user to a 401 page with specific message
+
+
 
 
 #------------------------------------------------------------------------------------------------------------#
