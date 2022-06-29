@@ -47,13 +47,10 @@ class userLoggedin:
 #------------------------------------------------------------------------------------------------------------#
 
 
-def loginsuccess():
+def loginsuccess(username):
     with openDB('src/db/users.db') as c:
-        username = request.get_cookie("user_id")
-        username = "adminkey"
         c.execute("SELECT logins FROM user_data WHERE username = ?", (username,))
-
-        c.execute("UPDATE user_data SET logins = ? WHERE username = ?", (2, username))
+        c.execute("UPDATE user_data SET logins = logins + 1 WHERE username = ?", (username,))
 
 @route('/loginPage')
 def login():
@@ -83,7 +80,7 @@ def do_login():
                     response.set_cookie("admin", value="True")
                     response.set_cookie("user_id", username)
                     loginstatus = "True"
-                    loginsuccess()
+                    loginsuccess(username)
                     return template('src/html/loginSuccess.html', message1='Logged in with admin credentials', message2='', message3='', loginmessage='', loginstatus=loginstatus)
                 else:
                     response.set_cookie("loginstatus", value="False")
@@ -111,7 +108,7 @@ def do_login():
                     response.set_cookie("recentnum", value=num, secret='secretkey' )
                     loginstatus="True"
                     response.set_cookie("admin", value="False")
-                    loginsuccess()
+                    loginsuccess(username)
                     return template('src/html/loginSuccess.html',message1='Accessing User Id {}'.format(username),message2='',message3='', loginmessage="Login to website success.", loginstatus=loginstatus)
                 elif password != key[0]:
                 #elif password != key[0]: #if user input password is not equal to existing password
