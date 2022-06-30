@@ -134,30 +134,31 @@ def do_login():
 def adminpage():
     with openDB('src/db/users.db') as c:
         loginstatus = request.get_cookie("loginstatus")
-        adminstatus = request.get_cookie("admin")
-        userID = request.get_cookie("user_id")
-        recent = request.get_cookie("recent")
-        if adminstatus == "False":
-            if request.GET.delete:
-                print("deleting data")
-                c.execute("DELETE FROM user_data WHERE username = ?", (userID,))
-                droptable = f'''DROP TABLE [{userID}]'''
-                c.execute(droptable)
-                response.set_cookie("loginstatus", value="False")
-                response.set_cookie("user_id", '')
-                
-                return template('src/html/index.html',loginstatus="False", message1="Account succesfully deleted",message2='',message3='',username='')
+        if loginstatus == "True":
+            adminstatus = request.get_cookie("admin")
+            userID = request.get_cookie("user_id")
+            recent = request.get_cookie("recent")
+            if adminstatus == "False":
+                if request.GET.delete:
+                    c.execute("DELETE FROM user_data WHERE username = ?", (userID,))
+                    droptable = f'''DROP TABLE [{userID}]'''
+                    c.execute(droptable)
+                    response.set_cookie("loginstatus", value="False")
+                    response.set_cookie("user_id", '')
 
+                    return template('src/html/index.html',loginstatus="False", message1="Account succesfully deleted",message2='',message3='',username='')
+
+                else:
+                    loginsess = 'True'
+                    return template('src/html/accountsettings.html',cookie1=loginstatus, cookie2=userID, cookie3=recent, loginstatus=loginsess, login=loginsess)
             else:
-                loginsess = 'True'
-                return template('src/html/accountsettings.html',cookie1=loginstatus, cookie2=userID, cookie3=recent, loginstatus=loginsess, login=loginsess)
-        else:
-            c.execute("SELECT COUNT(*) FROM user_data")
+                c.execute("SELECT COUNT(*) FROM user_data")
 
-            num_users = c.fetchall()
-            loginsess = 'True'
-            return template('src/html/adminpage.html', num_users=num_users, loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID, cookie4=recent)
-    
+                num_users = c.fetchall()
+                loginsess = 'True'
+                return template('src/html/adminpage.html', num_users=num_users, loginstatus=loginsess, login=loginsess, cookie1=loginstatus, cookie2=adminstatus, cookie3=userID, cookie4=recent)
+        else:
+            redirect('/loginstatus')
 
 @route('/userdata')
 def user_data():
@@ -655,13 +656,6 @@ def loadPage():
 # EXPERIMENTAL SECTION FOR USER SUPPORT _ TO BE IMPLEMENTED LATER ON IN DEVELOPMENT--------------------------# COLOUR OPTIONS / EMAIL FORM
 #------------------------------------------------------------------------------------------------------------#
 
-##### COLOUR OPTION #####
-@route('/colourSelect')
-def colourselect():
-    userOutput = template('src/html/colourOptions.html')
-    return userOutput
-
-##### COLOUR OPTION ######
 
 def loginstatus():
     response.set_cookie("loginstatus", value="False")

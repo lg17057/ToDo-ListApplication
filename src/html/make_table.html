@@ -91,7 +91,8 @@
             <h2>Accessing username [{{diagnostic}}]</h2>
             <small>Status (1) = Closed, Status (0) = Open</small>
             <br>
-            <small>To sort table, click headers.</small>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">
+
             <table id="myTable" class="todoTable">
               <th onclick="sortbynumber()" title="Sort By Number">
                 #Num  
@@ -151,6 +152,33 @@
 th {
   cursor: pointer;
 }
+#myInput {
+  width: 15%;
+  font-size: 14px;
+  padding: 11px;
+  border: 1px solid #ddd;
+}
+
 </style>
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
 </html>
 

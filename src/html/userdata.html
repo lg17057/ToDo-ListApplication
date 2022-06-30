@@ -98,17 +98,19 @@
 <hr>
 <!-- MAIN CONTENT-->
 <div>
+    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search.." title="Type in a category">
+
     <table id="myTable" class="todoTable">
-      <th onclick="sortbynumber()" title="Sort By Number">
+      <th onclick="sortbynumber()" title="Sort">
         User ID
       </th>
-      <th onclick="sortTable(0)" title="Sort Alphabetically">
+      <th onclick="sortTable(0)" title=" ">
         Username
       </th>
       <th>
         # Logins
       </th>
-      <th onclick="sortTable(1)" title="Sort by Date Created">
+      <th onclick="sortTable(1)" title="">
         # Entries
       </th>
       </th>
@@ -155,4 +157,31 @@ font-style: normal;
 th {
 cursor: pointer;
 }
+#myInput {
+  width: 15%;
+  font-size: 14px;
+  padding: 11px;
+  border: 1px solid #ddd;
+}
+
 </style>
+<script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("myTable");
+      tr = table.getElementsByTagName("tr");
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }       
+      }
+    }
+    </script>

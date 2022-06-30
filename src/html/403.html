@@ -12,9 +12,14 @@
             <h3> Here are some suggested links: </h3>
             <input class="red" type="submit"  name="homePage403" value="Home Page" title="Return Home" onclick="window.location.href='/'">
             <br>
-            <input class="blue" type="submit"  name="todo403" value="View To Do List"  title="View Items" onclick="window.location.href='/userSelectTodo'">
+            <input class="blue" type="submit"  name="todo403" value="View To Do List"  title="View Items" onclick="window.location.href='/todo'">
             <br>
             <input class="green" type="submit"  name="newentry403" value="New Entry"  title="Create New Item"  onclick="window.location.href='/new'">
+            <br>
+            <form action="/logout" method="get">
+                <input type="submit" value="Logout"  class="logoutBtn" name="logout">
+            </form>
+
         </div>
     </body>
 </html>
