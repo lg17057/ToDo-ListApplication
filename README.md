@@ -6,8 +6,8 @@ This ToDo List application will allow the user to do the following:
 
 ## USE:
 Admin Credentials:
-                * 'adminkey'
-                * 'adminkey123'
+                *'adminkey'
+                *'adminkey123'
 
 ### Base(Required) Features;
 
@@ -23,8 +23,8 @@ Admin Credentials:
 
 ### Additional Features;
 
-*An Admin page to; * view diagnostic data
-                   * disable specific features (for future users)
+* An Admin page to; * view diagnostic data
+                    * disable specific features (for future users)
 * Settings page for users
 * User can delete account and account data
   
