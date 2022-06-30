@@ -138,8 +138,19 @@ def adminpage():
         userID = request.get_cookie("user_id")
         recent = request.get_cookie("recent")
         if adminstatus == "False":
-            loginsess = 'True'
-            return template('src/html/accountsettings.html', loginstatus=loginsess, login=loginsess)
+            if request.GET.delete:
+                print("deleting data")
+                c.execute("DELETE FROM user_data WHERE username = ?", (userID,))
+                droptable = f'''DROP TABLE [{userID}]'''
+                c.execute(droptable)
+                response.set_cookie("loginstatus", value="False")
+                response.set_cookie("user_id", '')
+                
+                return template('src/html/index.html',loginstatus="False", message1="Account succesfully deleted",message2='',message3='',username='')
+
+            else:
+                loginsess = 'True'
+                return template('src/html/accountsettings.html',cookie1=loginstatus, cookie2=userID, cookie3=recent, loginstatus=loginsess, login=loginsess)
         else:
             c.execute("SELECT COUNT(*) FROM user_data")
 
@@ -150,11 +161,18 @@ def adminpage():
 
 @route('/userdata')
 def user_data():
+    adminstatus = request.get_cookie("admin")
+    username = request.get_cookie("user_id")
     with openDB('src/db/users.db') as c:
-        c.execute("SELECT user_id, username, logins, num_entries FROM user_data")
-        result = c.fetchall()
+        if adminstatus=="True":
+            c.execute("SELECT user_id, username, logins, num_entries FROM user_data")
+            result = c.fetchall()
+            return template('src/html/userdata.html', rows=result, loginstatus="True")
 
-        return template('src/html/userdata.html', rows=result, loginstatus="True")
+        elif adminstatus == "False":
+            c.execute("SELECT user_id, username, logins, num_entries FROM user_data WHERE username = ?", (username,))
+            result = c.fetchall()
+            return template('src/html/userdata.html', rows=result, loginstatus="True")
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
