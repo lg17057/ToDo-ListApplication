@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+    <title>To-Do List</title>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- JAVA SCRIPT-->
+        <script src="static/openNav.js"></script>
+        <script src="static/success.js"></script>
+        <script src="static/modal.js"></script>
+        <script src="static/tableSort.js"></script>
+        <script src="static/UserSelect.js"></script>
+        <!-- CSS / FONT-->
+        <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+        <link rel="stylesheet" type="text/css" href="static/loginStyles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Browser Icon-->
+        <link rel="icon" type="image.png" href="static/favicon-16x16.png">
+    </head>
+    <!-- End of Header -->
+    <body>
+        <div>
+            <!-- User Login Buttons-->
+            <div id="userLogin/signUp">
+                    <indent>
+                        <%if loginstatus == "True":%>
+                                <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
+                        <%else:%>
+                            <form action="/loginPage" method="get">
+                                <!-- Login   Button-->
+                                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                            </form>
+                            <div style="position:relative; top: 1px;">
+                                <form action="/signUp" method="get">
+                                    <!-- Sign Up  Button-->
+                                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                                </form>
+                            </div>
+                        <%end%>
+                    </indent>
+                
+                
+            </div>
+            <!-- User Login Buttions-->
+    
+            <div>
+                <!-- Side Nav Div -->
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <form action="/" method="get">
+                        <input type="submit" name="homeRedirect" value="Home Page">
+                    </form>
+                    <br>
+                    <form action="/todo" method="get">
+                        <input type="submit" name="todoList" value="View Entries">
+                    </form>
+                    <br>
+                    <form action="/new" method="get">
+                        <input type="submit" name="saveNew" value="New Entry">
+                    </form>
+                    <br>
+                    <form action="/edit/editSelect" method="get">
+                        <input type="submit" name="editEntry" value="Edit Entry">
+                    </form>
+                    <br>
+                    <form action="/deleteQ" method="get">
+                        <input type="submit" name="deleteEntry" value="Delete Entry">
+                    </form>
+                    <br>
+                    <form action="/loadPage" method="get">
+                        <input type="submit" name="aboutMe" value="About Me">
+                    </form>
+                    <br>
+                    <div>
+                        <form action="/help" method="get">
+                            <input type="submit" name="helpPage" value="Help/FAQ">
+                        </form>
+                    </div>
+                </div>
+    
+                <!--   Menu Button    -->
+                <div id="Options">
+                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+                </div>
+    
+            </div>
+            </div>
+    </body>
+ <!--- Main Content-->
+
+<div>
+    <!--   To Do List Header    -->
+
+    <hr>
+
+<h1>Admin Controls</h1>
+
+<div class="main" id="userWelcome" >
+    <form action="/logout" method="get">
+        <input type="submit" value="Logout"  class="logoutBtn" name="logout" style="float:right;position: relative; top:-60px">
+    </form>
+</div>
+<h2>Disable Features</h2>
+<h4>New Items</h4>
+<label class="switch">
+    <input name="new" type="checkbox" checked>
+    <span class="slider round"></span>
+  </label>
+<h4>Edit Items</h4>
+  <label class="switch">
+    <input name="edit" type="checkbox" checked>
+    <span class="slider round"></span>
+  </label>
+<h4>Delete Item/Delete All Items</h4>
+  <label class="switch"><input name="delete" type="checkbox" checked ><span class="slider round"></span></label>\______/<label class="switch"><input name="deleteall" type="checkbox" checked><span class="slider round"></span></label>
+<h4>Settings Page</h4>
+  <label class="switch">
+    <input name="settings" type="checkbox" checked>
+    <span class="slider round"></span>
+  </label>
+  <hr>
+
+
+
+
+
+
+
+
+
+
+
+
+  <button onclick="document.getElementById('id01').style.display='block'"  class="saveButton" id="saveButton"  name="confirm">Confirm Changes</button>
+
+
+<div id="id01" class="modal">
+    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
+    <form class="modal-content" >
+      <div class="container">
+        <h1>Confirm Changes</h1>
+        <p>Are you sure you want to remove these features?</p>
+      
+        <div class="clearfix">
+          <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+          <form method="/admincontrol" method="get">
+              <input type="submit" value="Confirm" onclick="document.getElementById('id01').style.display='none'" name="confirm" class="deletebtn">
+          </form>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+  // Get the modal
+  var modal = document.getElementById('id01');
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+
+
+<style>
+    
+    * {box-sizing: border-box;}
+    
+    /* Set a style for all buttons */
+    .cancelbtn,
+    .deletebtn {
+      background-color: #04AA6D;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      opacity: 0.9;
+    }
+    
+    button:hover,
+    input:hover {
+      opacity:1;
+    }
+    
+    /* Float cancel and delete buttons and add an equal width */
+    .cancelbtn, .deletebtn {
+      float: left;
+      width: 50%;
+    }
+    
+    /* Add a color to the cancel button */
+    .cancelbtn {
+      background-color: #ccc;
+      color: black;
+    }
+    
+    /* Add a color to the delete button */
+    .deletebtn {
+      background-color: #f44336;
+    }
+    
+    /* Add padding and center-align text to the container */
+    .container {
+      padding: 16px;
+      text-align: center;
+    }
+    
+    /* The Modal (background) */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      padding-top: 50px;
+    }
+    
+    /* Modal Content/Box */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+    }
+    
+    /* Style the horizontal ruler */
+    hr {
+      border: 1px solid #f1f1f1;
+      margin-bottom: 25px;
+    }
+     
+    /* The Modal Close Button (x) */
+    .close {
+      position: absolute;
+      right: 35px;
+      top: 15px;
+      font-size: 40px;
+      font-weight: bold;
+      color: #f1f1f1;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: #f44336;
+      cursor: pointer;
+    }
+    
+    /* Clear floats */
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    /* Change styles for cancel button and delete button on extra small screens */
+    @media screen and (max-width: 300px) {
+      .cancelbtn, .deletebtn {
+         width: 100%;
+      }
+    }
+    </style>
+<style>
+    
+    
+    
+    
+
+
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+
+<!-- Main Content-->
+</html>

@@ -5,10 +5,12 @@ from select import select
 import re
 import sqlite3 as sql #connection between bottle/python and sqlite
 from sqlite3 import *  #allows selecting from sqlite
-from bottle import route, run, debug, template, request, static_file, error, view, default_app, abort #allows running of bottle website and its features
+from bottle import route, run, debug, template, request, static_file, error, view, default_app, abort, install #allows running of bottle website and its features
 from bottle import *
 from datetime import date #allows data_created data 
 import hashlib # Allows password Hashing #
+
+
 
 
 message1=''
@@ -41,6 +43,8 @@ class userLoggedin:
     def __exit__(self, type, value, traceback):
         return
         
+
+
 
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
@@ -130,6 +134,30 @@ def do_login():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR SETTINGS OR ADMIN  PAGE ---------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
+
+@route('/admincontrols')
+def admincontrols():
+    loginstatus = request.get_cookie("loginstatus")
+    if request.GET.confirm:
+        new = request.forms.get('new')
+        edit = request.forms.get('edit')
+        delete = request.forms.get('delete') 
+        delete_all = request.forms.get('deletall')
+        settings = request.get.settings
+        
+        
+        response.set_cookie("new_status", value="Valid")
+        response.set_cookie("edit_status", value="Valid")
+        response.set_cookie("delete_status", value="Valid")
+        response.set_cookie("deleteall_status", value="Valid")
+        response.set_cookie("settings_status", value="Valid")
+        setting = request.get_cookie("settings_status")
+        print(new)
+        print(setting)
+        return template("src/html/alteritemsuccess.html", message1="User options changed", loginstatus=loginstatus, message2='')
+    return template("src/html/admincontrols.html", loginstatus=loginstatus)
+
+
 @route('/settingspage')
 def adminpage():
     with openDB('src/db/users.db') as c:
@@ -660,6 +688,7 @@ def loadPage():
 def loginstatus():
     response.set_cookie("loginstatus", value="False")
     loginsess = "False"
+    response.set_cookie("adminstatus", value="False")
 
 
 #------------------------------------------------------------------------------------------------------------#
@@ -667,7 +696,7 @@ def loginstatus():
 #---------------
 # ---------------------------------------------------------------------------------------------#
 
-
-loginsess="False"
-run(host='127.1.0.1', port=5500, reloader=True, debug=True)
-loginstatus()
+if __name__ == "__main__":
+    loginsess="False"
+    run(host='127.1.0.1', port=5500, reloader=True, debug=True)
+    loginstatus()
