@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+    <title>Choose what to Edit</title>
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- JAVA SCRIPT-->
+      <script src="static/openNav.js"></script>
+      <script src="static/success.js"></script>
+      <script src="static/modal.js"></script>
+      <script src="static/tableSort.js"></script>
+      <script src="static/UserSelect.js"></script>
+      <!-- CSS / FONT-->
+      <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+      <link rel="stylesheet" type="text/css" href="static/styles.css">
+      <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+      <link rel="stylesheet" type="text/css" href="static/loginStyles.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <!-- Browser Icon-->
+      <link rel="icon" type="image.png" href="static/favicon-16x16.png">
+  </head>
+  <!-- End of Header -->
+  <body>
+      <div>
+          <!-- User Login Buttons-->
+          <div id="userLogin/signUp">
+                  <indent>
+                      <%if loginstatus == "True":%>
+                              <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
+                      <%else:%>
+                          <form action="/loginPage" method="get">
+                              <!-- Login   Button-->
+                              <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                          </form>
+                          <div style="position:relative; top: 1px;">
+                              <form action="/signUp" method="get">
+                                  <!-- Sign Up  Button-->
+                                  <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                              </form>
+                          </div>
+                      <%end%>
+                  </indent>
+              
+              
+          </div>
+          <!-- User Login Buttions-->
+  
+          <div>
+              <!-- Side Nav Div -->
+              <div id="mySidenav" class="sidenav">
+                  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                  <form action="/" method="get">
+                      <input type="submit" name="homeRedirect" value="Home Page">
+                  </form>
+                  <br>
+                  <form action="/todo" method="get">
+                      <input type="submit" name="todoList" value="View Entries">
+                  </form>
+                  <br>
+                  <form action="/new" method="get">
+                      <input type="submit" name="saveNew" value="New Entry">
+                  </form>
+                  <br>
+                  <form action="/edit/editSelect" method="get">
+                      <input type="submit" name="editEntry" value="Edit Entry">
+                  </form>
+                  <br>
+                  <form action="/deleteQ" method="get">
+                      <input type="submit" name="deleteEntry" value="Delete Entry">
+                  </form>
+                  <br>
+                  <form action="/loadPage" method="get">
+                      <input type="submit" name="aboutMe" value="About Me">
+                  </form>
+                  <br>
+                  <div>
+                      <form action="/help" method="get">
+                          <input type="submit" name="helpPage" value="Help/FAQ">
+                      </form>
+                  </div>
+              </div>
+  
+              <!--   Menu Button    -->
+              <div id="Options">
+                  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+              </div>
+  
+          </div>
+          </div>
+  </body>
+   
+<!-- MAIN CONTENT-->
+<div class="center">
+    <div id="chooseItem">
+        <h3> Please choose which item # you would like to edit:</h3>
+            <label>Item No#:</label>
+            <select class="UserSelect" title="Choose which item number to edit" id="UserSelect" class="center" size="1" required>
+                <optgroup label="To-Do List #1"></optgroup>
+                <option value="/edit/1">1</option>
+                <option value="/edit/2">2</option>
+                <option value="/edit/3">3</option>
+                <option value="/edit/4">4</option>
+                <option value="/edit/5">5</option>
+                <option value="/edit/6">6</option>
+                <option value="/edit/7">7</option>
+                <option value="/edit/8">8</option>
+                <option value="/edit/9">9</option>
+                <option value="/edit/10">10</option>
+                <option value="/edit/11">11</option>
+                <option value="/edit/12">12</option>
+                <option value="/edit/13">13</option>
+                <option value="/edit/14">14</option>
+                <option value="/edit/15">15</option>
+                <option value="/edit/16">16</option>
+                <option value="/edit/17">17</option>
+                <option value="/edit/18">18</option>
+                <option value="/edit/19">19</option>
+                <option value="/edit/20">20</option>
+                <option value="/edit/21">21</option>
+                <option value="/edit/22">22</option>
+                <option value="/edit/23">23</option>
+                <option value="/edit/24">24</option>
+                <option value="/edit/25">25</option>
+                <option value="/edit/26">26</option>
+                <option value="/edit/27">27</option>
+                <option value="/edit/28">28</option>
+                <option value="/edit/29">29</option>
+                <option value="/edit/30">30</option>
+                <option value="/edit/31">31</option>
+                <option value="/edit/32">32</option>
+                <option value="/edit/33">33</option>
+                <option value="/edit/34">34</option>
+                <option value="/edit/35">35</option>
+                <option value="/edit/36">36</option>
+                <option value="/edit/37">37</option>
+                <option value="/edit/38">38</option>
+                <option value="/edit/39">39</option>
+                <option value="/edit/40">40</option>
+                <option value="/edit/41">41</option>
+                <option value="/edit/42">42</option>
+                <option value="/edit/43">43</option>
+                <option value="/edit/44">44</option>
+                <option value="/edit/45">45</option>
+                <option value="/edit/46">46</option>
+                <option value="/edit/47">47</option>
+                <option value="/edit/48">48</option>
+                <option value="/edit/49">49</option>
+                <option value="/edit/50">50</option>
+            </select>
+            
+            <input type="submit" name="submit"  title="Confirm edit item choice"  class="saveButtonSmall" value="Submit" onclick="go()">
+
+    </div><!-- Choose item class-->
+</div> <!-- Center class-->
+<hr>
+<h3>Your most recently created item:</h3>
+  
+  <h4><b>{{recent}}</b></h4>
+  <h4><i>Item Id: {{recentnum}}</i></h4>
+
+<!-- MAIN CONTENT-->
+<style>body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6
+  p {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  
+  body {
+      font-family: open-sans, sans-serif;
+      font-weight: 300;
+      font-style: normal;
+  }
+  
+  #confirmButton {
+      display: inline-block;
+      margin: 0 auto;
+  }
+  
+  .center {
+      margin: auto;
+  }
+  
+  .logoutBtn{
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 9px 18px;
+    border: 1px solid #0800ff;
+    text-decoration: none;
+    font-size: 16px;
+    color: #0800ff;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    display: block;
+  }
+  
+  
+  /* SIDENAV STUFFSIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF */ 
+      .submit {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 14px 28px;
+          border: 2px solid #808080;
+          text-decoration: none;
+          font-size: 16px;
+          color: #808080;
+          cursor: pointer;
+          background-color: #000000;
+          display: block;
+          transition: 0.3s;
+      }
+      
+      .div .signIn:hover {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          color: #04AA6D;
+          border: 2px solid #04AA6D;
+      }
+      
+      .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: #000000;
+          overflow-x: hidden;
+          transition: 0.3s;
+          padding-top: 60px;
+      }
+      
+      .sidenav input {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 14px 28px;
+          border: 2px solid #808080;
+          text-decoration: none;
+          font-size: 16px;
+          color: #808080;
+          cursor: pointer;
+          background-color: #000000;
+          display: block;
+          transition: 0.3s;
+      }
+      
+      .sidenav input:hover {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 14px 28px;
+          border: 2px solid #04AA6D;
+          border-radius: 6px;
+          text-decoration: none;
+          font-size: 16px;
+          color: #04AA6D;
+          cursor: pointer;
+          background-color: #000000;
+          display: block;
+          transition: 0.1s;
+      }    
+      .sidenav .closebtn {
+          color: #ffffff;
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+      }  
+      .sidenav .closebtn:hover {
+          color: #04AA6D;
+      }
+      
+      @media screen and (max-height: 450px) {
+          .sidenav {
+              padding-top: 15px;
+          }
+          .sidenav a {
+              font-size: 18px;
+          }
+      }
+  /* SIDENAV STUFFSIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF */ 
+  /* LOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN */
+      .signIn {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 9px 18px;
+          border: none;
+          text-decoration: none;
+          font-size: 16px;
+          color: #000000;
+          cursor: pointer;
+          background-color: #FFFFFF;
+          display: block;
+          transition: 0.2s;
+      }
+              
+      .signIn:hover {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 9px 18px;
+          border: none;
+          text-decoration: none;
+          font-size: 16px;
+          color: #04AA6D;
+          cursor: pointer;
+          background-color: #FFFFFF;
+          display: block;
+          transition: 0.3s;
+      }
+              
+      .login {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          padding: 9px 18px;
+          border: 2px solid #038a58;
+          border-radius: 16px;
+          text-decoration: none;
+          font-size: 16px;
+          color: #FFFFFF;
+          cursor: pointer;
+          background-color: #04AA6D;
+          display: block;
+          transition: 0.3s;
+      }
+              
+      .login:hover {
+          font-family: open-sans, sans-serif;
+          font-weight: 300;
+          font-style: normal;
+          border-radius: 18px;
+          border: 2px solid #04AA6D;
+          color: #FFFFFF;
+          cursor: pointer;
+          background-color: #04AA6D;
+          display: block;
+          transition: 0.3s;
+      }
+   
+  
+  /* LOGIN STUFFLOGIN  */
+  .readonly:hover {
+    cursor: not-allowed;
+  }
+  /* NEW ITEM ITEM BAR */
+  
+  hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+  }
+    
+  .container {
+      padding: 16px;
+      background-color: white;
+    }
+  input[type=text] {
+      width: 46%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      display: inline-block;
+      border: none;
+      background: #f1f1f1;
+    }
+    
+    input[type=text]:focus  {
+      background-color: #ddd;
+      outline: none;
+    }
+  
+  
+  
+    input[type=date] {
+      font-family: open-sans, sans-serif;
+      font-weight: 300;
+      font-style: normal;
+    }
+  
+  /* SAVE BUTTONS STYLE */
+  
+  .saveButton {
+      font-family: open-sans, sans-serif;
+      font-weight: 300;
+      font-style: normal;
+      background-color: white;
+      color: black;
+      border: 2px solid #555555;
+      padding: 9px 18px;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      top: 1px;
+      border-radius: 18px
+    }
+    
+  .saveButton:hover {
+      font-family: open-sans, sans-serif;
+      font-weight: 350;
+      font-style: normal;
+      background-color: #ffffff;
+      border: 2px solid #04aa6d;
+      padding: 9px 18px;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0s;
+      top:1px;
+      border-radius: 16px;
+  }
+    
+  .saveButtonSmall {
+      font-family: open-sans, sans-serif;
+      font-weight: 300;
+      font-style: normal;
+      background-color: white;
+      color: black;
+      border: 2px solid #555555;
+      padding: 5px 10px;
+      text-decoration: none;
+      font-size: 12px;
+      cursor: pointer;
+      top: 1px;
+      border-radius: 10px
+    }
+    
+  .saveButtonSmall:hover {
+      font-family: open-sans, sans-serif;
+      font-weight: 350;
+      font-style:oblique;
+      background-color: #ffffff;
+      border: 2px solid #04aa6d;
+      padding: 5px 10px;
+      text-decoration: none;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0s;
+      top:1px;
+      border-radius: 9px;
+  }
+   /* FOR item select dropdown */
+  .UserSelect {
+      font-family: open-sans, sans-serif;
+      font-weight: 200;
+      font-style: normal;
+      color: #04aa6d;
+  }
+  
+  #UserDelete {
+      font-family: open-sans, sans-serif;
+      font-weight: 300;
+      font-style: normal;
+      color: #f44336;
+  }
+  
+  /* FOR HELP PAGE */
+  
+  .accordion {
+      background-color: #eee;
+      color: #444;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      text-align: left;
+      border: none;
+      outline: none;
+      transition: 0.4s;
+    }
+    
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    .accordion {
+      background-color: #eee;
+      color: #444;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+      transition: 0.4s;
+    }
+    
+    .active, .accordion:hover {
+      background-color: #ccc;
+    }
+    
+    .accordion:after {
+      content: '\002B';
+      color: #777;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+    }
+    
+    .active:after {
+      content: "\2212";
+    }
+    
+    .panel {
+      padding: 0 18px;
+      background-color: white;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+    }
+  
+  /* DELETE ALL BUTTON */
+  
+  .deleteAll {
+      background-color: white; 
+      color: #f44336; 
+      border: 2px solid #f44336;
+    }
+    
+  .deleteAll:hover {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .deleteOne {
+    background-color: white;
+    color: rgb(255, 165, 0);
+    border: 2px solid rgb(255, 165, 0);
+  }
+  
+  .deleteOne:hover {
+    background-color: rgb(255, 165, 0);
+    color: white;
+  }
+  
+  /* DELETE ITEM MODAL POPUP */
+  
+  .modal-content #cancelBtn hr,
+  .modal-content #confirmBtn hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+  }
+  
+  
+  
+  .modal-content #confirmBtn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+    width: 50%;
+    display: inline-block;
+    border: 1px solid #ffffff;
+  }
+  
+  .modal-content #confirmBtn:hover {
+    opacity: 1;
+    color: #04aa6d;
+    background-color: #ffffff;
+    padding: 16px 20px;
+    cursor: pointer;
+    width: 50%;
+    display: inline-block;
+    border: 1px solid #04aa6d;
+  }
+  
+  
+  .modal-content #cancelBtn{
+      border: 1px solid #ffffff ;
+      background-color: #ffffff;
+      color: rgb(0, 0, 0);
+      padding: 16px 20px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.9;
+      width: 50%;
+      display: inline-block;
+  }
+  
+  .modal-content #cancelBtn:hover{
+    opacity: 1;
+    border: 1px solid #ff0000 ;
+    background-color: #ffffff;
+    color: rgb(255, 0, 0);
+    padding: 16px 20px;
+    cursor: pointer;
+    width: 50%;
+    display: inline-block;
+  }
+  
+  
+  
+  .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1; 
+      padding-top: 100px; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgb(0,0,0); 
+      background-color: rgba(0,0,0,0.4); 
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  
+  /* CANCEL AND CONFIRM BUTTON */
+  
+  
+  
+  
+  #snackbar {
+    visibility: hidden; 
+    min-width: 250px; 
+    margin-left: -125px; 
+    background-color: #333; 
+    color: #fff; 
+    text-align: center; 
+    border-radius: 2px; 
+    padding: 16px; 
+    position: fixed; 
+    z-index: 1; 
+    left: 50%; 
+    bottom: 30px;
+  }
+  
+  
+  #snackbar.show {
+    visibility: visible; 
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.7s, fadeout 0.5s 2.5s;
+    animation: fadein 0.7s, fadeout 0.5s 2.5s;
+  
+  }
+  
+  @-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }
+  
+  /* 404 and 403 */
+  .Qblue{
+    font-family: open-sans,sans-serif;
+    font-weight: 350;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #000000;
+    text-decoration: none;
+    font-size: 17px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: inline-block;
+    transition: 0.3s;
+  }
+  .Qblue:hover{
+    font-family: open-sans,sans-serif;
+    font-weight: 350;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #0074D9;
+    text-decoration: none;
+    font-size: 17px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: inline-block;
+    transition: 0.3s;
+    opacity: 0.7;
+  }
+  .Qgreen{
+    font-family: open-sans,sans-serif;
+    font-weight: 350;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #000000;
+    text-decoration: none;
+    font-size: 17px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: inline-block;
+    transition: 0.3s;
+  }
+  .Qgreen:hover {
+    font-family: open-sans,sans-serif;
+    font-weight: 350;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #2ECC40;
+    text-decoration: none;
+    font-size: 17px;
+    color: #000000;
+    background-color: rgb(255, 255, 255);
+    cursor: pointer;
+    display: inline-block;
+    transition: 0.3s;
+    opacity: 0.7;
+  }
+  
+  
+  .red{
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #555555;
+    text-decoration: none;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .red:hover{
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #F44336;
+    text-decoration: none;
+    font-size: 16px;
+    color: #F44336;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }   
+  .blue {
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #555555;
+    text-decoration: none;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }
+  .blue:hover {
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #008CBA;
+    text-decoration: none;
+    font-size: 16px;
+    color: #008cba;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }
+  .green{
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #000000;
+    text-decoration: none;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }
+  .green:hover {
+    font-family: open-sans,sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #04aa6d;
+    text-decoration: none;
+    font-size: 16px;
+    color: #04aa6d;
+    cursor: pointer;
+    background-color: #ffffff;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  /* ANOTHER ITEM PAGE CSS */
+  
+  
+  
+  #createNew:hover {
+    opacity: 1;
+    color: #04aa6d;
+    background-color: #ffffff;
+    padding: 16px 20px;
+    cursor: pointer;
+    border: 2px solid #04aa6d;
+  }
+  
+  
+  #createNo:hover{
+    opacity: 1;
+    border: 2px solid #ff0000 ;
+    background-color: #ffffff;
+    color: rgb(255, 0, 0);
+    padding: 16px 20px;
+    cursor: pointer;
+  }
+  
+  #createNo, #createNew {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 16px 20px;
+    border: 2px solid #000;
+    cursor: pointer;
+    opacity: 0.9;
+  }
+  
+  </style>
+<script>
+    function go() {
+window.location=document.getElementById("UserSelect").value
+}
+
+function gotwo() {
+    window.location=document.getElementById("UserDelete").value
+}
+</script>
+<script>
+    function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0px";
+}
+</script>
+</html>
+

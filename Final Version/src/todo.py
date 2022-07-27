@@ -18,9 +18,6 @@ message2=''
 message3=''
 username=''
 
-#class used to open databse in multiple instances
-#WITH userLoggedin():
-
 class openDB():
     def __init__(self, file_name):
         self.obj = sql.connect(file_name)
@@ -34,8 +31,6 @@ class openDB():
         self.obj.commit()
         self.obj.close()
 
-#class used to check whether user logged in in multiple instances;
-#WITH userLoggedin():
 
 class userLoggedin:
     def __enter__(self):
@@ -55,14 +50,12 @@ class userLoggedin:
 # DESIGNATION FOR LOGIN PAGE---------------------------------------------------------------------------------# LOGIN PAGE
 #------------------------------------------------------------------------------------------------------------#
 
-#sets number of logins after a succesfull login
-#must bet referenced as a function with username as variable
+
 def loginsuccess(username):
     with openDB('src/db/users.db') as c:
         c.execute("SELECT logins FROM user_data WHERE username = ?", (username,))
         c.execute("UPDATE user_data SET logins = logins + 1 WHERE username = ?", (username,))
 
-#login page route, checks if user is logged in already
 @route('/loginPage')
 def login():
     loginstatus = request.get_cookie("loginstatus")
@@ -73,8 +66,6 @@ def login():
         loginstatus="True"
         return template('src/html/loginSuccess.html',message1='',message2='',message3='',  loginmessage="You are already logged in.", loginstatus=loginstatus)
 
-#login page route for post
-#handles user login data
 @route('/loginPage', method='POST')
 def do_login():
     with openDB('src/db/users.db') as c:
@@ -144,8 +135,6 @@ def do_login():
 # DESIGNATION PAGE FOR SETTINGS OR ADMIN  PAGE ---------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
 
-#admin controls page
-#unfinished section of website
 @route('/admincontrols')
 def admincontrols():
     loginstatus = request.get_cookie("loginstatus")
@@ -168,9 +157,7 @@ def admincontrols():
         return template("src/html/alteritemsuccess.html", message1="User options changed", loginstatus=loginstatus, message2='')
     return template("src/html/admincontrols.html", loginstatus=loginstatus)
 
-#route for the settings page
-#checks if user logged in
-#allows user to delete their account and the data associated with the account
+
 @route('/settingspage')
 def adminpage():
     with openDB('src/db/users.db') as c:
@@ -201,8 +188,6 @@ def adminpage():
         else:
             redirect('/loginstatus')
 
-#route allowing admin to view all user data
-#admin must be logged in for this page to be accessed
 @route('/userdata')
 def user_data():
     adminstatus = request.get_cookie("admin")
@@ -222,7 +207,6 @@ def user_data():
 # DESIGNATION PAGE FOR LOGINSTATUS PAGE ---------------------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------------#
 
-#route for when the user is not logged in
 @route('/loginstatus')
 def loginstatus():
     loginstatus = request.get_cookie("loginstatus")
@@ -237,7 +221,6 @@ def loginstatus():
 # DESIGNATION PAGE FOR USER NOT LOGGED IN MESSAGE -----------------------------------------------------------#
 #-----------------------------------------------------------------------------------------------
     
-#the designated route that handles user logging out of account
 @route('/logout', method=["GET", "POST"])
 def logout():
     response.set_cookie("loginstatus", value="False")
@@ -256,7 +239,6 @@ def logout():
 # DESIGNATION FOR SIGN UP PAGE-------------------------------------------------------------------------------# SIGN UP PAGE
 #------------------------------------------------------------------------------------------------------------#
 
-#designated route for the sign up page that checks whether user is logged in.
 ###### SIGN UP PAGE ######
 @route('/signUp')
 def signUp():
@@ -268,8 +250,6 @@ def signUp():
         loginstatus="True"
         return template('src/html/loginSuccess.html',message1='',message2='',message3='',  loginmessage="You are already logged in with userID {}".format(username), loginstatus=loginstatus)
 
-
-#designated post for handling user account creation data
 @post('/signUp')
 def userSignUp():
     with openDB('src/db/users.db') as c:
@@ -297,7 +277,7 @@ def userSignUp():
 
                    #fixes issues with database being locked
                    c.execute(createTable)
-                   time.sleep(1.5) #fixes issues with database being locked
+                   time.sleep(1.5)
                    c.execute(insertTable)       
                 c.execute("INSERT INTO user_data (username, password, logins, num_entries) VALUES (?, ?, ?, ?)", (username, password, 0, 1))
                 #commts username and hashed password data to user_data table
@@ -316,22 +296,6 @@ def userSignUp():
 #------------------------------------------------------------------------------------------------------------#
 
 ###### IMPORT CSS / JAVASCRIPT #######
-
-#IMPORTANT INFORMATION
-
-#THIS STATIC ROUTE IS SPECIFIC TO THE FILE LOCATION ON YOUR COMPUTER
-
-#To get the absolute file path for the static folder, follow these instructions
-
-#Go to the folder location of the static folder
-#Navigate near the top and right click on the static folder tag at the top that shows the folders holding the static folder
-#Select 'copy address as text'
-#past into;
-
-#return static_file(filepath, root='#Insert Here')
-
-
-
 @route('/static/<filepath:path>')
 def load_static(filepath):
     #allows program to access static files such as Cascading Stylsheets, Javascript Files and images, etc
@@ -342,8 +306,6 @@ def load_static(filepath):
 #------------------------------------------------------------------------------------------------------------#
 # DEFAULT ROUTE----------------------------------------------------------------------------------------------# DEFAULT ROUTE
 #------------------------------------------------------------------------------------------------------------#
-
-#Default route for the home page
 
 ###### INDEX ROUTE ######
 @route('/')
@@ -364,10 +326,6 @@ def home_page():
 # DESIGNATION FOR EMAIL FORM---------------------------------------------------------------------------------# ITEM NOT FOUND
 #------------------------------------------------------------------------------------------------------------#
 
-#Route for the contact form page
-
-#UNFINISHED PROGRAM
-
 @route('/contact_form')
 def emailForm():
     userOutput = template('src/html/email_form.html')
@@ -376,9 +334,6 @@ def emailForm():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO EDIT SELECTED ITEM-----------------------------------------------------------------# EDIT 
 #------------------------------------------------------------------------------------------------------------#
-
-#route for the edit page, once the user has selected what item to edit
-#handles the changing of SQLite data 
 
 ###### EDIT ITEM (INT) ######
 @route('/edit/<no:int>', method='GET')
@@ -419,9 +374,6 @@ def edit_item(no):
 # DESIGNATION FOR PAGE FOR USER TO CHOOSE WHAT ITEM TO EDIT--------------------------------------------------# EDIT SELECTOR
 #------------------------------------------------------------------------------------------------------------#
 
-#page where the user can choose which item to edit
-#routes user, based on choice. This is handled through javascript in the html file
-
 ####### PRELIMINARY EDIT ######
 @route('/edit/editSelect')
 def uEditChoice():
@@ -440,9 +392,6 @@ def uEditChoice():
 # DESIGNATION  PAGE FOR USER TO CHOOSE TO DELETE ALL ITEMS OR DELETE ONE ITEM--------------------------------# DELETE SELECT SELECTOR
 #------------------------------------------------------------------------------------------------------------#
 
-#user chooses whether to delete 1 item or all items on this page
-#this route only handles two possible button presses, which are handled on the html file
-
 @route('/deleteQ')
 def delete_query():
 
@@ -456,9 +405,6 @@ def delete_query():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION OR USER TO DELETE ALL ITEMS-------------------------------------------------------------------# DELETE ALL
 #------------------------------------------------------------------------------------------------------------# 
-
-#the user can delete all items in their table if they choose to through this route
-#this route only handles the deletion of all SQLite data
 
 ##### DELETE ALL ITEMS ####
 @route('/deleteAllitems')
@@ -487,10 +433,6 @@ def deleteALLitems():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER TO DELETE SPECIFIC ITEM---------------------------------------------------------------# DELETE
 #------------------------------------------------------------------------------------------------------------#
-
-
-#route for the delete page, once the user has selected what item to delete
-#handles the deletion of specific SQLite data 
 
 ###### DELETE ITEM ######
 @route('/delete/<no:int>')
@@ -532,9 +474,6 @@ def delete(no):
 # DESIGNATION FOR PAGE FOR USER TO CHOOSE WHAT ITEM TO DELETE------------------------------------------------# DELETE SELECT
 #------------------------------------------------------------------------------------------------------------#
 
-#this is the route for the user to choose which item to delete
-#html file handles routing based on user choice
-
 ####### PRELIMINARY Delete ######
 @route('/delete/deleteSelect')
 def uDeleteChoice():
@@ -554,9 +493,6 @@ def uDeleteChoice():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION PAGE FOR USER TO VIEW ITEMS IN todo LIST-------------------------------------------------------# VIEW 
 #------------------------------------------------------------------------------------------------------------#
-
-#route for the user to view the items in their database
-#sends user away if there are no items in their database
 
 ###### VIEW ALL OPEN ITEMS ######
 @route('/todo')
@@ -583,8 +519,7 @@ def todo_list():
 # DESIGNATION FOR USER TO CREATE NEW todo ITEM---------------------------------------------------------------# CREATE 
 #------------------------------------------------------------------------------------------------------------#
 
-#route for the user to create new items
-#handles SQLite transactions for creating new data for the user, based on their username
+
         
 
 
@@ -623,7 +558,6 @@ def new_item():
 #------------------------------------------------------------------------------------------------------------#
 # DESIGNATION FOR USER QUERY TO CREATE NEW ITEM -------------------------------------------------------------# CREATE NEW PROMPT
 #------------------------------------------------------------------------------------------------------------#
-
 
 ##### MAKE ANOTHER ITEM? #####
 @route('/anotheritem')

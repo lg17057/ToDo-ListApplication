@@ -1,0 +1,266 @@
+body,
+h1,
+h2,
+h3,
+h4,
+p {
+  font-family: open-sans, sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* */
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+    .sidenav a {
+        font-size: 18px;
+    }
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px;
+}
+
+
+
+
+/* SIDENAV STUFFSIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF SIDENAV STUFF */
+
+/* LOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN */
+.signIn {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 9px 18px;
+    border: none;
+    text-decoration: none;
+    font-size: 16px;
+    color: #000000;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    display: block;
+    transition: 0.2s;
+}
+        
+.signIn:hover {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 9px 18px;
+    border: none;
+    text-decoration: none;
+    font-size: 16px;
+    color: #04AA6D;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    display: block;
+    transition: 0.3s;
+}
+        
+.login {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 9px 18px;
+    border: 2px solid #038a58;
+    border-radius: 16px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+    background-color: #04AA6D;
+    display: block;
+    transition: 0.3s;
+}
+        
+.login:hover {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    border-radius: 18px;
+    border: 2px solid #04AA6D;
+    color: #FFFFFF;
+    cursor: pointer;
+    background-color: #04AA6D;
+    display: block;
+    transition: 0.3s;
+}
+.sidenav input {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #808080;
+    text-decoration: none;
+    font-size: 16px;
+    color: #808080;
+    cursor: pointer;
+    background-color: #000000;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav input:hover {
+    font-family: open-sans, sans-serif;
+    font-weight: 300;
+    font-style: normal;
+    padding: 14px 28px;
+    border: 2px solid #04AA6D;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    color: #04AA6D;
+    cursor: pointer;
+    background-color: #000000;
+    display: block;
+    transition: 0.1s;
+}    
+.sidenav .closebtn {
+    color: #ffffff;
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}  
+.sidenav .closebtn:hover {
+    color: #04AA6D;
+}
+/* LOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN STUFFLOGIN */
+
+
+
+/* ACTUAL REGISTRATION STUFF */
+
+#registrationDiv ,
+#loginDiv * {
+  box-sizing: border-box;
+}
+
+#registrationDiv, 
+#loginDiv .container {
+  padding: 16px;
+  background-color: white;
+  text-align: center;
+}
+
+#email-input,
+#username-input,
+#password,
+#password-repeat {
+  width: 30%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: block;
+  margin: 0 auto;
+  border: none;
+  background: #f1f1f1;
+}
+
+#email-input:focus,
+#username-input,
+#password:focus,
+#password-repeat:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+#registrationDiv,
+#loginDiv hr {
+  border: 1px solid #f1f1f1;
+  margin-bottom: 25px;
+}
+
+#registrationDiv .registerbtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  width: 30%;
+  display: block;
+  margin: 0 auto;
+}
+
+#loginDiv .loginBtn,
+.signupBtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  width: 15%;
+  display: inline-block;
+}
+
+#loginDiv .loginBtn {
+  border: 1px solid #ffffff ;
+}
+
+#loginDiv .signupBtn {
+  border: 1px solid #ffffff;
+}
+
+
+.registerbtn:hover,
+.loginBtn:hover {
+  opacity: 1;
+}
+
+
+#registrationDiv .signin {
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+
+/* PASSWORD VALIDATOR */
+
+#message {
+  display:none;
+  background: #f1f1f1;
+  color: #000;
+  position: relative;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+#message p {
+  padding: 10px 35px;
+  font-size: 18px;
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  left: -35px;
+  content: "✔";
+}
+
+/* Add a red text color and an "x" when the requirements are wrong */
+.invalid {
+  color: red;
+}
+
+.invalid:before {
+  position: relative;
+  left: -35px;
+  content: "✖";
+}

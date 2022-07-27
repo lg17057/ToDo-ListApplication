@@ -1,0 +1,24 @@
+<html> 
+    <head>
+    <title>404 - URL Doesn't Exist</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+    <link rel="stylesheet" href="/static/favicon-16x16x.png">
+
+    </head>
+    <body>
+        <div>
+            <h1> Looks like the page you just entered does not exist.</h1>
+            <h3> Here are some suggested links: </h3>
+            <input class="red" type="submit"  name="homePage403"  title="Return Home" value="Home Page" onclick="window.location.href='/'">
+            <br>
+            <input class="blue" type="submit"  name="todo403" value="View To Do List"  title="View Item" onclick="window.location.href='/userSelectTodo'">
+            <br>
+            <input class="green" type="submit"  name="newentry403" value="New Entry" onclick="window.location.href='/new'">
+            <br>
+            <form action="/logout" method="get">
+                <input type="submit" value="Logout"  class="logoutBtn" name="logout" >
+            </form>
+        </div>
+    </body>
+</html>

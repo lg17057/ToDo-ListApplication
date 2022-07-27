@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <title>Create New Item?</title>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- JAVA SCRIPT-->
+        <script src="static/openNav.js"></script>
+        <script src="static/success.js"></script>
+        <script src="static/modal.js"></script>
+        <script src="static/tableSort.js"></script>
+        <script src="static/UserSelect.js"></script>
+        <!-- CSS / FONT-->
+        <link rel="stylesheet" type="text/css" href="static/snackbar.css">
+        <link rel="stylesheet" type="text/css" href="static/styles.css">
+        <link rel="stylesheet" href="https://use.typekit.net/crf3sph.css">
+        <link rel="stylesheet" type="text/css" href="static/loginStyles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Browser Icon-->
+        <link rel="icon" type="image.png" href="static/favicon-16x16.png">
+    </head>
+    <!-- End of Header -->
+    <body>
+        <div>
+            <!-- User Login Buttons-->
+            <div id="userLogin/signUp">
+                    <indent>
+                        <%if loginstatus == "True":%>
+                                <span onclick="window.location.href='/settingspage'" title="Account Settings" class="fa fa-user-circle-o" style="font-size:36px;cursor:pointer;float: right;"></span>
+                        <%else:%>
+                            <form action="/loginPage" method="get">
+                                <!-- Login   Button-->
+                                <input type="submit" class="login" name="loginPage" value="Login" style="float: right;">
+                            </form>
+                            <div style="position:relative; top: 1px;">
+                                <form action="/signUp" method="get">
+                                    <!-- Sign Up  Button-->
+                                    <input type="submit" class="signIn" name="signUpPage" value="Sign Up" style="float: right;">
+                                </form>
+                            </div>
+                        <%end%>
+                    </indent>
+                
+                
+            </div>
+            <!-- User Login Buttions-->
+    
+            <div>
+                <!-- Side Nav Div -->
+                <div id="mySidenav" class="sidenav">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                    <form action="/" method="get">
+                        <input type="submit" name="homeRedirect" value="Home Page">
+                    </form>
+                    <br>
+                    <form action="/todo" method="get">
+                        <input type="submit" name="todoList" value="View Entries">
+                    </form>
+                    <br>
+                    <form action="/new" method="get">
+                        <input type="submit" name="saveNew" value="New Entry">
+                    </form>
+                    <br>
+                    <form action="/edit/editSelect" method="get">
+                        <input type="submit" name="editEntry" value="Edit Entry">
+                    </form>
+                    <br>
+                    <form action="/deleteQ" method="get">
+                        <input type="submit" name="deleteEntry" value="Delete Entry">
+                    </form>
+                    <br>
+                    <form action="/loadPage" method="get">
+                        <input type="submit" name="aboutMe" value="About Me">
+                    </form>
+                    <br>
+                    <div>
+                        <form action="/help" method="get">
+                            <input type="submit" name="helpPage" value="Help/FAQ">
+                        </form>
+                    </div>
+                </div>
+    
+                <!--   Menu Button    -->
+                <div id="Options">
+                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;Menu </span>
+                </div>
+    
+            </div>
+            </div>
+    </body>
+<h2 >Would you like to create a new item?;</h2>
+
+<input  title="Confirm No New Item" style="width: 17%" class="Qblue" type="button" onclick="window.location.href='/todo'" value="View New Item"><input  title="Confirm Create New Item"  class="Qgreen" type="button" value="Create New Item" onclick="window.location.href='/new'">
+
+
+
+<style>
+    .Qblue{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #000000;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  width: 17%;
+}
+.Qblue:hover{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #0074D9;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  opacity: 0.7;
+  width: 17%;
+
+}
+.Qgreen{
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #000000;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  cursor: pointer;
+  background-color: #ffffff;
+  display: inline-block;
+  transition: 0.3s;
+  width: 17%;
+
+}
+.Qgreen:hover {
+  font-family: open-sans,sans-serif;
+  font-weight: 350;
+  font-style: normal;
+  padding: 14px 28px;
+  border: 2px solid #2ECC40;
+  text-decoration: none;
+  font-size: 17px;
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  cursor: pointer;
+  display: inline-block;
+  transition: 0.3s;
+  opacity: 0.7;
+  width: 17%;
+
+}
+
+</style>
+</html>
