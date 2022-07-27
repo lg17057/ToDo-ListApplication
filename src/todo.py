@@ -299,7 +299,7 @@ def userSignUp():
                    c.execute(createTable)
                    time.sleep(1.5) #fixes issues with database being locked
                    c.execute(insertTable)       
-                c.execute("INSERT INTO user_data (username, password, logins, num_entries) VALUES (?, ?, ?, ?)", (username, password, 0, 1))
+                   c.execute("INSERT INTO user_data (username, password, logins, num_entries) VALUES (?, ?, ?, ?)", (username, password, 0, 1))
                 #commts username and hashed password data to user_data table
 
                 #commits data to file and closes sqlite connection
