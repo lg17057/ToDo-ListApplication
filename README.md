@@ -1,3 +1,9 @@
+#SOMETHING IMPORTANT TO NOTE
+
+If this code is not working for you in terms of certain features, I can let you access the code for stress testing/general testing in that case that it does not work on your computerfor some reason.
+
+
+
 # Actual-Code
 ## GitHub repository Mid-Year project (LG17057)
 
